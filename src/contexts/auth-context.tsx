@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { getCurrentUser, onAuthStateChange, type AuthUser } from '@/lib/auth'
+import { getCurrentUser, onAuthStateChange, enableDemoMode, type AuthUser } from '@/lib/auth'
 
 interface AuthContextType {
   user: AuthUser | null
@@ -76,6 +76,18 @@ export function withAuth<P extends object>(
 
     useEffect(() => {
       if (!isLoading && !isAuthenticated) {
+        // Enable demo mode automatically in development
+        if (process.env.NODE_ENV === 'development' || 
+            window.location.hostname.includes('e2b.dev') ||
+            window.location.hostname === 'localhost') {
+          console.log('🎯 Enabling demo mode for development/testing')
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('demo-mode', 'true')
+          }
+          // Trigger a re-render by refreshing the page
+          window.location.reload()
+          return
+        }
         window.location.href = redirectTo
       }
     }, [isAuthenticated, isLoading])

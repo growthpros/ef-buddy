@@ -60,6 +60,33 @@ function TasksPage() {
   useEffect(() => {
     loadTasks()
     loadDailyLoad()
+    
+    // Seed demo data if in demo mode and no neuro-check data exists
+    if (typeof window !== 'undefined' && localStorage.getItem('demo-mode') === 'true') {
+      const today = new Date().toISOString().split('T')[0]
+      const todayKey = `neuro-check-${today}`
+      
+      if (!localStorage.getItem(todayKey)) {
+        console.log('🎯 Demo mode: Creating demo neuro-check data with 8 spoons')
+        const demoNeuroCheckData = {
+          mood_level: 4,
+          energy_units: 4,
+          focus_capacity: 4,
+          stress_level: 3,
+          brain_mode: 'Normal',
+          burnout_flags: [],
+          sensory_state: 'balanced',
+          sleep_quality: 'good',
+          notes: 'Demo data for testing',
+          capacity_today: 8,
+          spoon_expansion_efforts: ['meditation', 'protein'],
+          completed_at: new Date().toISOString()
+        }
+        localStorage.setItem(todayKey, JSON.stringify(demoNeuroCheckData))
+        console.log('✅ Demo neuro-check data created')
+      }
+    }
+    
     loadSpoonCapacity()
     
     // Listen for storage changes to sync spoon capacity
@@ -98,6 +125,8 @@ function TasksPage() {
 
   // Load current spoon capacity from neuro-check results
   const loadSpoonCapacity = () => {
+    console.log('🔄 loadSpoonCapacity called - starting spoon capacity check')
+    
     try {
       // Get all localStorage keys with neuro-check data
       const neuroCheckKeys = []
@@ -119,7 +148,15 @@ function TasksPage() {
       // Also check today's date specifically
       const today = new Date().toISOString().split('T')[0]
       const todayKey = `neuro-check-${today}`
+      console.log('🔍 Today\'s date:', today)
       console.log('🔍 Looking specifically for today key:', todayKey)
+      console.log('🔍 Today key exists?', !!localStorage.getItem(todayKey))
+      
+      // Check all dates available
+      neuroCheckKeys.forEach(key => {
+        const dateFromKey = key.replace('neuro-check-', '')
+        console.log(`📅 Available neuro-check date: ${dateFromKey} (key: ${key})`)
+      })
       
       // Sort by date (most recent first) and add today's key if it exists
       const keysToCheck = [...neuroCheckKeys]
@@ -141,32 +178,41 @@ function TasksPage() {
           const neuroCheckData = localStorage.getItem(key)
           if (neuroCheckData) {
             const parsed = JSON.parse(neuroCheckData)
-            console.log('📋 Checking neuro-check data from', key, ':', parsed)
-            console.log('📋 Looking for capacity_today:', parsed.capacity_today, 'completed_at:', parsed.completed_at)
+            console.log(`📋 Checking neuro-check data from ${key}:`, parsed)
+            console.log(`📋 Has capacity_today: ${parsed.capacity_today !== undefined} (value: ${parsed.capacity_today})`)
+            console.log(`📋 Has completed_at: ${!!parsed.completed_at} (value: ${parsed.completed_at})`)
             
             // Check if this is a completed neuro-check with capacity data
             if (parsed.capacity_today !== undefined && parsed.completed_at) {
-              console.log('✅ Found valid completed neuro-check! Using spoon capacity from', key, ':', parsed.capacity_today)
+              console.log(`✅ Found valid completed neuro-check! Using spoon capacity from ${key}: ${parsed.capacity_today}`)
+              console.log(`🔄 Setting dailySpoons to ${parsed.capacity_today}`)
+              console.log(`🔄 Setting availableSpoons to ${parsed.capacity_today}`)
               setDailySpoons(parsed.capacity_today)
               setAvailableSpoons(parsed.capacity_today) // Start with full capacity
+              console.log(`✅ Spoon capacity updated! Daily: ${parsed.capacity_today}, Available: ${parsed.capacity_today}`)
               return // Found valid data, stop searching
             } else if (parsed.capacity_today !== undefined && key === todayKey) {
-              console.log('⚠️ Found TODAY\'S capacity but no completion timestamp:', parsed.capacity_today)
+              console.log(`⚠️ Found TODAY'S capacity but no completion timestamp: ${parsed.capacity_today}`)
+              console.log(`🔄 Setting spoons anyway since it's today's data`)
               setDailySpoons(parsed.capacity_today)
               setAvailableSpoons(parsed.capacity_today)
               return
             } else if (parsed.capacity_today !== undefined) {
-              console.log('⚠️ Found capacity from previous day but no completion timestamp:', parsed.capacity_today, 'from', key)
+              console.log(`⚠️ Found capacity from previous day but no completion timestamp: ${parsed.capacity_today} from ${key}`)
               // Don't use old incomplete data, continue searching
+            } else {
+              console.log(`❌ Key ${key} has no capacity_today field`)
             }
+          } else {
+            console.log(`❌ Key ${key} has no data`)
           }
         } catch (parseError) {
-          console.error('Failed to parse neuro-check data from', key, ':', parseError)
+          console.error(`Failed to parse neuro-check data from ${key}:`, parseError)
         }
       }
       
-      console.log('⚠️ No valid neuro-check data found, using default spoons (12)')
-      console.log('🔍 Current state - dailySpoons:', dailySpoons, 'availableSpoons:', availableSpoons)
+      console.log('⚠️ No valid neuro-check data found, keeping current spoons')
+      console.log(`🔍 Current state - dailySpoons: ${dailySpoons}, availableSpoons: ${availableSpoons}`)
     } catch (error) {
       console.error('Failed to load spoon capacity from neuro-check:', error)
       // Keep default values
@@ -742,10 +788,11 @@ function TasksPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {/* Inbox */}
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-4">
+                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
+                        <Plus className="h-4 w-4 mr-2 text-gray-500" />
                         Inbox ({capturedTasks.length})
                       </h3>
                       <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -765,23 +812,42 @@ function TasksPage() {
                                   <span className="text-xs text-gray-500">{task.energy_required} energy</span>
                                 </div>
                               </div>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleTaskPromote(task)}
-                                className="text-blue-600 hover:text-blue-700"
-                              >
-                                <ArrowUp className="h-4 w-4" />
-                              </Button>
+                              <div className="flex flex-col gap-1">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleTaskPromote(task)}
+                                  className="text-blue-600 hover:text-blue-700 text-xs px-2 py-1"
+                                  title="Move to Today"
+                                >
+                                  → Today
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleTaskPromoteToWeek(task)}
+                                  className="text-purple-600 hover:text-purple-700 text-xs px-2 py-1"
+                                  title="Move to This Week"
+                                >
+                                  → Week
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         ))}
+                        {capturedTasks.length === 0 && (
+                          <div className="text-center py-6 text-gray-500">
+                            <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">No tasks in inbox</p>
+                          </div>
+                        )}
                       </div>
                     </div>
 
                     {/* Today */}
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-4">
+                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
+                        <Target className="h-4 w-4 mr-2 text-blue-500" />
                         Today ({todayTasks.length})
                       </h3>
                       <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -793,23 +859,85 @@ function TasksPage() {
                               <span className={`w-2 h-2 rounded-full ${getEnergyColor(task.energy_required)}`} />
                               <span className="text-xs text-gray-500">{task.energy_required} energy</span>
                             </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleTaskComplete(task)}
-                              className="mt-2 text-green-600 hover:text-green-700"
-                            >
-                              <CheckCircle className="h-4 w-4 mr-1" />
-                              Complete
-                            </Button>
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleTaskComplete(task)}
+                                className="text-green-600 hover:text-green-700 text-xs"
+                              >
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Complete
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleTaskPromoteToWeek(task)}
+                                className="text-purple-600 hover:text-purple-700 text-xs"
+                              >
+                                → Week
+                              </Button>
+                            </div>
                           </div>
                         ))}
+                        {todayTasks.length === 0 && (
+                          <div className="text-center py-6 text-gray-500">
+                            <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">No tasks for today</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* This Week */}
+                    <div>
+                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
+                        <Calendar className="h-4 w-4 mr-2 text-purple-500" />
+                        This Week ({thisWeekTasks.length})
+                      </h3>
+                      <div className="space-y-3 max-h-96 overflow-y-auto">
+                        {thisWeekTasks.map(task => (
+                          <div key={task.id} className="p-3 bg-purple-50 rounded-lg border-l-4 border-l-purple-500">
+                            <h4 className="font-medium text-sm">{task.title}</h4>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="outline">{task.priority}</Badge>
+                              <span className={`w-2 h-2 rounded-full ${getEnergyColor(task.energy_required)}`} />
+                              <span className="text-xs text-gray-500">{task.energy_required} energy</span>
+                            </div>
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleTaskPromote(task)}
+                                className="text-blue-600 hover:text-blue-700 text-xs"
+                              >
+                                → Today
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleTaskComplete(task)}
+                                className="text-green-600 hover:text-green-700 text-xs"
+                              >
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Complete
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                        {thisWeekTasks.length === 0 && (
+                          <div className="text-center py-6 text-gray-500">
+                            <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">No tasks for this week</p>
+                          </div>
+                        )}
                       </div>
                     </div>
 
                     {/* Completed */}
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-4">
+                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
                         Completed ({completedTasks.length})
                       </h3>
                       <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -824,6 +952,12 @@ function TasksPage() {
                             </div>
                           </div>
                         ))}
+                        {completedTasks.length === 0 && (
+                          <div className="text-center py-6 text-gray-500">
+                            <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">No completed tasks</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

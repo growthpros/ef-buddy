@@ -136,6 +136,11 @@ export async function signOut(): Promise<AuthResult> {
  */
 export async function getCurrentUser(): Promise<AuthUser | null> {
   try {
+    // Check for demo mode first
+    if (typeof window !== 'undefined' && localStorage.getItem('demo-mode') === 'true') {
+      return getDemoUser()
+    }
+    
     const { data: { user }, error } = await supabase.auth.getUser()
     
     if (error || !user) {
@@ -146,6 +151,29 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   } catch (error) {
     console.error('Error getting current user:', error)
     return null
+  }
+}
+
+/**
+ * Enable demo mode for testing
+ */
+export function enableDemoMode(): AuthUser {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('demo-mode', 'true')
+  }
+  return getDemoUser()
+}
+
+/**
+ * Get demo user for testing
+ */
+export function getDemoUser(): AuthUser {
+  return {
+    id: 'demo-user',
+    email: 'demo@efbuddy.com', 
+    emailVerified: true,
+    createdAt: new Date().toISOString(),
+    lastSignIn: new Date().toISOString()
   }
 }
 
