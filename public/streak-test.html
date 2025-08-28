@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streak Inheritance Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+        .test-section { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007acc; }
+        .success { border-left-color: #28a745; }
+        .error { border-left-color: #dc3545; }
+        .warning { border-left-color: #ffc107; }
+        button { padding: 8px 16px; margin: 5px; background: #007acc; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .day { border: 1px solid #ddd; margin: 5px 0; padding: 10px; border-radius: 3px; }
+        .day.active { background: #e3f2fd; border-color: #2196f3; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Streak Inheritance Test</h1>
+    <p>This tool tests the 5-day streak system inheritance fix for the EF Buddy neuro-check component.</p>
+    
+    <div class="test-section">
+        <h2>🎮 Test Controls</h2>
+        <button onclick="clearAllData()">🗑️ Clear All Data</button>
+        <button onclick="setupTestData()">📊 Setup Test Data</button>
+        <button onclick="runInheritanceTest()">🧪 Run Inheritance Test</button>
+        <button onclick="viewCurrentState()">👁️ View Current State</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Results</h2>
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        // Simulate dates for testing
+        function getTestDate(daysFromToday = 0) {
+            const date = new Date('2025-08-18')
+            date.setDate(date.getDate() + daysFromToday)
+            return date.toISOString().split('T')[0]
+        }
+
+        function clearAllData() {
+            // Clear all localStorage data for neuro-check
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i)
+                if (key && key.startsWith('neuro-check-')) {
+                    localStorage.removeItem(key)
+                }
+            }
+            localStorage.removeItem('neuro-trend-history')
+            updateResults("✅ All data cleared")
+        }
+
+        function setupTestData() {
+            clearAllData()
+            
+            // Create test data for 5 consecutive days with a sleep streak
+            for (let day = 0; day < 5; day++) {
+                const date = getTestDate(day)
+                const data = {
+                    mood_level: 5,
+                    energy_units: 5,
+                    focus_capacity: 5,
+                    stress_level: 5,
+                    brain_mode: 'Normal',
+                    burnout_flags: [],
+                    spoon_expansion_efforts: day === 0 ? [] : ['sleep'], // No effort on day 0, sleep effort on days 1-4
+                    habit_streaks: day === 0 ? [] : [{
+                        effort_id: 'sleep',
+                        current_streak: day,
+                        last_checked_date: date,
+                        is_earned: day >= 5,
+                        earned_date: day === 5 ? date : undefined
+                    }],
+                    last_updated: new Date().toISOString()
+                }
+                localStorage.setItem(`neuro-check-${date}`, JSON.stringify(data))
+            }
+            
+            updateResults("✅ Setup test data for 5 consecutive days with sleep streak progression: 0 → 1 → 2 → 3 → 4")
+        }
+
+        function runInheritanceTest() {
+            const results = []
+            
+            // Test each day's data loading and streak inheritance
+            for (let day = 0; day < 5; day++) {
+                const date = getTestDate(day)
+                const key = `neuro-check-${date}`
+                const data = localStorage.getItem(key)
+                
+                if (data) {
+                    const parsed = JSON.parse(data)
+                    const streaks = parsed.habit_streaks || []
+                    const efforts = parsed.spoon_expansion_efforts || []
+                    const sleepStreak = streaks.find(s => s.effort_id === 'sleep')
+                    
+                    results.push(`
+                        <div class="day ${day === 2 ? 'active' : ''}">
+                            <h4>📅 Day ${day + 1} (${date})</h4>
+                            <p><strong>Efforts:</strong> ${efforts.length > 0 ? efforts.join(', ') : 'none'}</p>
+                            <p><strong>Sleep Streak:</strong> ${sleepStreak ? sleepStreak.current_streak + '/5' : '0/5'}</p>
+                            <p><strong>Last Checked:</strong> ${sleepStreak?.last_checked_date || 'never'}</p>
+                            <p><strong>Is Earned:</strong> ${sleepStreak?.is_earned || false}</p>
+                        </div>
+                    `)
+                } else {
+                    results.push(`
+                        <div class="day">
+                            <h4>📅 Day ${day + 1} (${date})</h4>
+                            <p style="color: red;"><strong>❌ No data found</strong></p>
+                        </div>
+                    `)
+                }
+            }
+            
+            // Test the specific inheritance scenario that was failing
+            updateResults(`
+                <h3>🧪 Inheritance Test Results</h3>
+                <p><strong>Scenario:</strong> Loading day 3 data should inherit streak from day 2</p>
+                ${results.join('')}
+                
+                <h4>🔍 Inheritance Logic Test</h4>
+                <p>Simulating loading Day 3 (${getTestDate(2)}) which should inherit from Day 2...</p>
+                ${testInheritanceLogic()}
+            `)
+        }
+
+        function testInheritanceLogic() {
+            const today = getTestDate(2) // Day 3
+            const todayKey = `neuro-check-${today}`
+            const todayData = localStorage.getItem(todayKey)
+            
+            if (!todayData) {
+                return '<p style="color: red;">❌ No data for day 3 to test with</p>'
+            }
+            
+            const parsed = JSON.parse(todayData)
+            let streaksToLoad = parsed.habit_streaks || []
+            
+            // Simulate the inheritance logic from the component
+            if (streaksToLoad.length === 0) {
+                const prevDate = new Date(today)
+                prevDate.setDate(prevDate.getDate() - 1)
+                const previousDay = prevDate.toISOString().split('T')[0]
+                const previousDayData = localStorage.getItem(`neuro-check-${previousDay}`)
+                
+                if (previousDayData) {
+                    try {
+                        const previousParsed = JSON.parse(previousDayData)
+                        const previousStreaks = previousParsed.habit_streaks || []
+                        if (previousStreaks.length > 0) {
+                            streaksToLoad = previousStreaks
+                            return `
+                                <p style="color: green;">✅ Successfully inherited ${previousStreaks.length} streak(s) from ${previousDay}</p>
+                                <pre>${JSON.stringify(previousStreaks, null, 2)}</pre>
+                            `
+                        }
+                    } catch (e) {
+                        return '<p style="color: red;">❌ Could not parse previous day data</p>'
+                    }
+                }
+            } else {
+                return `<p style="color: blue;">ℹ️ Day 3 already has ${streaksToLoad.length} streak(s), no inheritance needed</p>`
+            }
+            
+            return '<p style="color: orange;">⚠️ No previous day data found for inheritance</p>'
+        }
+
+        function viewCurrentState() {
+            const allData = {}
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i)
+                if (key && key.startsWith('neuro-check-')) {
+                    try {
+                        allData[key] = JSON.parse(localStorage.getItem(key))
+                    } catch (e) {
+                        allData[key] = `Error parsing: ${localStorage.getItem(key)}`
+                    }
+                }
+            }
+            
+            updateResults(`
+                <h3>👁️ Current LocalStorage State</h3>
+                <pre>${JSON.stringify(allData, null, 2)}</pre>
+            `)
+        }
+
+        function updateResults(html) {
+            document.getElementById('testResults').innerHTML = html
+        }
+
+        // Initialize
+        updateResults("Ready to test streak inheritance. Use the controls above to run tests.")
+    </script>
+</body>
+</html>
