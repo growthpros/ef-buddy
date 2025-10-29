@@ -1,0 +1,1674 @@
+
+> ef-buddy@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.31
+  - Local:        http://localhost:3005
+
+ ✓ Starting...
+ ✓ Ready in 2.6s
+ ○ Compiling /neuro-check ...
+ ✓ Compiled /neuro-check in 10.4s (646 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ ✓ Compiled in 1332ms (325 modules)
+ GET /neuro-check 200 in 11843ms
+ ✓ Compiled in 148ms (311 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 206ms
+ ⚠ Cross origin request detected from 3005-ieug5a2tg8rtf7jx01wvx-6532622b.e2b.dev to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1035ms (635 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /streak-test.html. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /streak-test.html. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /streak-test.html 404 in 1235ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 149ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 104ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 84ms
+ ✓ Compiled in 1771ms (646 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1080ms (646 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 313ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 94ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 125ms
+ ✓ Compiled in 1944ms (646 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⨯ ./src/components/neuro-check/interactive-neuro-check.tsx
+Error: 
+  [31mx[0m the name `today` is defined multiple times
+     ,-[[36;1;4m/home/user/webapp/src/components/neuro-check/interactive-neuro-check.tsx[0m:354:1]
+ [2m354[0m |     try {
+ [2m355[0m |     
+ [2m356[0m |     const isCurrentlyChecked = expansionEfforts.includes(effortId)
+ [2m357[0m |     const today = getCurrentDate()
+     : [31;1m          ^^|^^[0m
+     :             [31;1m`-- [31;1mprevious definition of `today` here[0m[0m
+ [2m358[0m |     
+ [2m359[0m |     console.log('✅ Is currently checked:', isCurrentlyChecked)
+ [2m360[0m |     console.log('📅 Today:', today)
+ [2m361[0m |     
+ [2m362[0m |     let newEfforts: string[]
+ [2m363[0m |     let newStreaks: HabitStreak[]
+ [2m364[0m |     
+ [2m365[0m |     if (isCurrentlyChecked) {
+ [2m366[0m |       // Unchecking - remove from today's efforts and reset streak
+ [2m367[0m |       console.log('❌ UNCHECKING - resetting streak')
+ [2m368[0m |       newEfforts = expansionEfforts.filter(id => id !== effortId)
+ [2m369[0m |       newStreaks = habitStreaks.map(streak => 
+ [2m370[0m |         streak.effort_id === effortId 
+ [2m371[0m |           ? { ...streak, current_streak: 0, last_checked_date: '' }
+ [2m372[0m |           : streak
+ [2m373[0m |       )
+ [2m374[0m |     } else {
+ [2m375[0m |       // Checking - add to today's efforts and update streak
+ [2m376[0m |       console.log('✅ CHECKING - updating streak')
+ [2m377[0m |       newEfforts = [...expansionEfforts, effortId]
+ [2m378[0m |       
+ [2m379[0m |       // Check for existing streak in current state AND previous days
+ [2m380[0m |       let existingStreak = habitStreaks.find(s => s.effort_id === effortId)
+ [2m381[0m |       console.log('📈 Existing streak in current state:', existingStreak)
+ [2m382[0m |       console.log('📊 Current habitStreaks state:', habitStreaks)
+ [2m383[0m |       
+ [2m384[0m |       // ALWAYS check previous days for continuation, even if we have a current streak
+ [2m385[0m |       // This ensures we get the most up-to-date streak count
+ [2m386[0m |       console.log('🔍 Checking previous days for streak continuation...')
+ [2m387[0m |       const previousDay = getPreviousDay(today)
+ [2m388[0m |       console.log('📅 Previous day to check:', previousDay)
+ [2m389[0m |       const previousDayData = localStorage.getItem(`neuro-check-${previousDay}`)
+ [2m390[0m |       
+ [2m391[0m |       if (previousDayData) {
+ [2m392[0m |         try {
+ [2m393[0m |           const previousParsed = JSON.parse(previousDayData)
+ [2m394[0m |           const previousStreaks = previousParsed.habit_streaks || []
+ [2m395[0m |           const previousStreak = previousStreaks.find((s: any) => s.effort_id === effortId)
+ [2m396[0m |           
+ [2m397[0m |           console.log('📊 Previous day data:', {
+ [2m398[0m |             date: previousDay,
+ [2m399[0m |             efforts: previousParsed.spoon_expansion_efforts || [],
+ [2m400[0m |             streaks: previousStreaks
+ [2m401[0m |           })
+ [2m402[0m |           
+ [2m403[0m |           if (previousStreak && previousParsed.spoon_expansion_efforts?.includes(effortId)) {
+ [2m404[0m |             console.log('📊 Found valid previous day streak for continuation:', previousStreak)
+ [2m405[0m |             // Always use previous day streak as the base for continuation
+ [2m406[0m |             // Don't use it as-is, but as the foundation for incrementing
+ [2m407[0m |             if (!existingStreak) {
+ [2m408[0m |               existingStreak = previousStreak
+ [2m409[0m |               console.log('🔄 Using previous day streak as base for increment')
+ [2m410[0m |             } else {
+ [2m411[0m |               // If we have both, use whichever has the higher count as base
+ [2m412[0m |               if (previousStreak.current_streak > existingStreak.current_streak) {
+ [2m413[0m |                 existingStreak = previousStreak
+ [2m414[0m |                 console.log('🔄 Previous day streak is higher, using it as base')
+ [2m415[0m |               }
+ [2m416[0m |             }
+ [2m417[0m |           } else {
+ [2m418[0m |             console.log('📂 No valid previous day streak found:', {
+ [2m419[0m |               previousStreak,
+ [2m420[0m |               hadEffort: previousParsed.spoon_expansion_efforts?.includes(effortId)
+ [2m421[0m |             })
+ [2m422[0m |           }
+ [2m423[0m |         } catch (e) {
+ [2m424[0m |           console.log('❌ Could not parse previous day data:', e)
+ [2m425[0m |         }
+ [2m426[0m |       } else {
+ [2m427[0m |         console.log('📂 No previous day data found for:', previousDay)
+ [2m428[0m |       }
+ [2m429[0m |       
+ [2m430[0m |       // Always increment from the base streak (either current or inherited from previous day)
+ [2m431[0m |       const baseStreakCount = existingStreak?.current_streak || 0
+ [2m432[0m |       const newStreakCount = baseStreakCount + 1
+ [2m433[0m |       console.log('📈 Streak calculation:', {
+ [2m434[0m |         existingStreak,
+ [2m435[0m |         baseStreakCount,
+ [2m436[0m |         newStreakCount,
+ [2m437[0m |         today,
+ [2m438[0m |         willIncrementFromBase: true
+ [2m439[0m |       })
+ [2m440[0m |       
+ [2m441[0m | 
+ [2m442[0m |       
+ [2m443[0m |       const updatedStreak: HabitStreak = {
+ [2m444[0m |         effort_id: effortId,
+ [2m445[0m |         current_streak: newStreakCount,
+ [2m446[0m |         last_checked_date: today,
+ [2m447[0m |         is_earned: newStreakCount >= 5,
+ [2m448[0m |         earned_date: newStreakCount === 5 ? today : (existingStreak?.earned_date || undefined)
+ [2m449[0m |       }
+ [2m450[0m |       
+ [2m451[0m |       console.log('🏆 Updated streak object:', updatedStreak)
+ [2m452[0m |       
+ [2m453[0m |       // Update or add the streak
+ [2m454[0m |       if (existingStreak) {
+ [2m455[0m |         newStreaks = habitStreaks.map(s => s.effort_id === effortId ? updatedStreak : s)
+ [2m456[0m |         console.log('📝 Updated existing streak in array')
+ [2m457[0m |       } else {
+ [2m458[0m |         newStreaks = [...habitStreaks, updatedStreak]
+ [2m459[0m |         console.log('➕ Added new streak to array')
+ [2m460[0m |       }
+ [2m461[0m |     }
+ [2m462[0m |     
+ [2m463[0m |     console.log('🔄 FINAL STATE:')
+ [2m464[0m |     console.log('✨ New efforts:', newEfforts)
+ [2m465[0m |     console.log('📊 New streaks:', newStreaks)
+ [2m466[0m |     
+ [2m467[0m |     // Update all states with flushSync to ensure immediate updates
+ [2m468[0m |     // Save the data manually BEFORE setting state to prevent race conditions
+ [2m469[0m |     const dataToSaveManually = {
+ [2m470[0m |       ...checkData,
+ [2m471[0m |       energy_units: energyUnits,
+ [2m472[0m |       spoon_expansion_efforts: newEfforts,
+ [2m473[0m |       habit_streaks: newStreaks,
+ [2m474[0m |       last_updated: new Date().toISOString()
+ [2m475[0m |     }
+ [2m476[0m |     
+ [2m477[0m |     const today = getCurrentDate()
+     : [33;1m          ^^|^^[0m
+     :             [33;1m`-- [33;1m`today` redefined here[0m[0m
+ [2m478[0m |     const savedDataKey = `neuro-check-${today}`
+ [2m479[0m |     localStorage.setItem(savedDataKey, JSON.stringify(dataToSaveManually))
+ [2m480[0m |     console.log('💾 Manual save BEFORE state update:', dataToSaveManually)
+     `----
+
+Import trace for requested module:
+./src/components/neuro-check/interactive-neuro-check.tsx
+./src/app/neuro-check/page.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/components/neuro-check/interactive-neuro-check.tsx
+Error: 
+  [31mx[0m the name `today` is defined multiple times
+     ,-[[36;1;4m/home/user/webapp/src/components/neuro-check/interactive-neuro-check.tsx[0m:354:1]
+ [2m354[0m |     try {
+ [2m355[0m |     
+ [2m356[0m |     const isCurrentlyChecked = expansionEfforts.includes(effortId)
+ [2m357[0m |     const today = getCurrentDate()
+     : [31;1m          ^^|^^[0m
+     :             [31;1m`-- [31;1mprevious definition of `today` here[0m[0m
+ [2m358[0m |     
+ [2m359[0m |     console.log('✅ Is currently checked:', isCurrentlyChecked)
+ [2m360[0m |     console.log('📅 Today:', today)
+ [2m361[0m |     
+ [2m362[0m |     let newEfforts: string[]
+ [2m363[0m |     let newStreaks: HabitStreak[]
+ [2m364[0m |     
+ [2m365[0m |     if (isCurrentlyChecked) {
+ [2m366[0m |       // Unchecking - remove from today's efforts and reset streak
+ [2m367[0m |       console.log('❌ UNCHECKING - resetting streak')
+ [2m368[0m |       newEfforts = expansionEfforts.filter(id => id !== effortId)
+ [2m369[0m |       newStreaks = habitStreaks.map(streak => 
+ [2m370[0m |         streak.effort_id === effortId 
+ [2m371[0m |           ? { ...streak, current_streak: 0, last_checked_date: '' }
+ [2m372[0m |           : streak
+ [2m373[0m |       )
+ [2m374[0m |     } else {
+ [2m375[0m |       // Checking - add to today's efforts and update streak
+ [2m376[0m |       console.log('✅ CHECKING - updating streak')
+ [2m377[0m |       newEfforts = [...expansionEfforts, effortId]
+ [2m378[0m |       
+ [2m379[0m |       // Check for existing streak in current state AND previous days
+ [2m380[0m |       let existingStreak = habitStreaks.find(s => s.effort_id === effortId)
+ [2m381[0m |       console.log('📈 Existing streak in current state:', existingStreak)
+ [2m382[0m |       console.log('📊 Current habitStreaks state:', habitStreaks)
+ [2m383[0m |       
+ [2m384[0m |       // ALWAYS check previous days for continuation, even if we have a current streak
+ [2m385[0m |       // This ensures we get the most up-to-date streak count
+ [2m386[0m |       console.log('🔍 Checking previous days for streak continuation...')
+ [2m387[0m |       const previousDay = getPreviousDay(today)
+ [2m388[0m |       console.log('📅 Previous day to check:', previousDay)
+ [2m389[0m |       const previousDayData = localStorage.getItem(`neuro-check-${previousDay}`)
+ [2m390[0m |       
+ [2m391[0m |       if (previousDayData) {
+ [2m392[0m |         try {
+ [2m393[0m |           const previousParsed = JSON.parse(previousDayData)
+ [2m394[0m |           const previousStreaks = previousParsed.habit_streaks || []
+ [2m395[0m |           const previousStreak = previousStreaks.find((s: any) => s.effort_id === effortId)
+ [2m396[0m |           
+ [2m397[0m |           console.log('📊 Previous day data:', {
+ [2m398[0m |             date: previousDay,
+ [2m399[0m |             efforts: previousParsed.spoon_expansion_efforts || [],
+ [2m400[0m |             streaks: previousStreaks
+ [2m401[0m |           })
+ [2m402[0m |           
+ [2m403[0m |           if (previousStreak && previousParsed.spoon_expansion_efforts?.includes(effortId)) {
+ [2m404[0m |             console.log('📊 Found valid previous day streak for continuation:', previousStreak)
+ [2m405[0m |             // Always use previous day streak as the base for continuation
+ [2m406[0m |             // Don't use it as-is, but as the foundation for incrementing
+ [2m407[0m |             if (!existingStreak) {
+ [2m408[0m |               existingStreak = previousStreak
+ [2m409[0m |               console.log('🔄 Using previous day streak as base for increment')
+ [2m410[0m |             } else {
+ [2m411[0m |               // If we have both, use whichever has the higher count as base
+ [2m412[0m |               if (previousStreak.current_streak > existingStreak.current_streak) {
+ [2m413[0m |                 existingStreak = previousStreak
+ [2m414[0m |                 console.log('🔄 Previous day streak is higher, using it as base')
+ [2m415[0m |               }
+ [2m416[0m |             }
+ [2m417[0m |           } else {
+ [2m418[0m |             console.log('📂 No valid previous day streak found:', {
+ [2m419[0m |               previousStreak,
+ [2m420[0m |               hadEffort: previousParsed.spoon_expansion_efforts?.includes(effortId)
+ [2m421[0m |             })
+ [2m422[0m |           }
+ [2m423[0m |         } catch (e) {
+ [2m424[0m |           console.log('❌ Could not parse previous day data:', e)
+ [2m425[0m |         }
+ [2m426[0m |       } else {
+ [2m427[0m |         console.log('📂 No previous day data found for:', previousDay)
+ [2m428[0m |       }
+ [2m429[0m |       
+ [2m430[0m |       // Always increment from the base streak (either current or inherited from previous day)
+ [2m431[0m |       const baseStreakCount = existingStreak?.current_streak || 0
+ [2m432[0m |       const newStreakCount = baseStreakCount + 1
+ [2m433[0m |       console.log('📈 Streak calculation:', {
+ [2m434[0m |         existingStreak,
+ [2m435[0m |         baseStreakCount,
+ [2m436[0m |         newStreakCount,
+ [2m437[0m |         today,
+ [2m438[0m |         willIncrementFromBase: true
+ [2m439[0m |       })
+ [2m440[0m |       
+ [2m441[0m | 
+ [2m442[0m |       
+ [2m443[0m |       const updatedStreak: HabitStreak = {
+ [2m444[0m |         effort_id: effortId,
+ [2m445[0m |         current_streak: newStreakCount,
+ [2m446[0m |         last_checked_date: today,
+ [2m447[0m |         is_earned: newStreakCount >= 5,
+ [2m448[0m |         earned_date: newStreakCount === 5 ? today : (existingStreak?.earned_date || undefined)
+ [2m449[0m |       }
+ [2m450[0m |       
+ [2m451[0m |       console.log('🏆 Updated streak object:', updatedStreak)
+ [2m452[0m |       
+ [2m453[0m |       // Update or add the streak
+ [2m454[0m |       if (existingStreak) {
+ [2m455[0m |         newStreaks = habitStreaks.map(s => s.effort_id === effortId ? updatedStreak : s)
+ [2m456[0m |         console.log('📝 Updated existing streak in array')
+ [2m457[0m |       } else {
+ [2m458[0m |         newStreaks = [...habitStreaks, updatedStreak]
+ [2m459[0m |         console.log('➕ Added new streak to array')
+ [2m460[0m |       }
+ [2m461[0m |     }
+ [2m462[0m |     
+ [2m463[0m |     console.log('🔄 FINAL STATE:')
+ [2m464[0m |     console.log('✨ New efforts:', newEfforts)
+ [2m465[0m |     console.log('📊 New streaks:', newStreaks)
+ [2m466[0m |     
+ [2m467[0m |     // Update all states with flushSync to ensure immediate updates
+ [2m468[0m |     // Save the data manually BEFORE setting state to prevent race conditions
+ [2m469[0m |     const dataToSaveManually = {
+ [2m470[0m |       ...checkData,
+ [2m471[0m |       energy_units: energyUnits,
+ [2m472[0m |       spoon_expansion_efforts: newEfforts,
+ [2m473[0m |       habit_streaks: newStreaks,
+ [2m474[0m |       last_updated: new Date().toISOString()
+ [2m475[0m |     }
+ [2m476[0m |     
+ [2m477[0m |     const today = getCurrentDate()
+     : [33;1m          ^^|^^[0m
+     :             [33;1m`-- [33;1m`today` redefined here[0m[0m
+ [2m478[0m |     const savedDataKey = `neuro-check-${today}`
+ [2m479[0m |     localStorage.setItem(savedDataKey, JSON.stringify(dataToSaveManually))
+ [2m480[0m |     console.log('💾 Manual save BEFORE state update:', dataToSaveManually)
+     `----
+
+Import trace for requested module:
+./src/components/neuro-check/interactive-neuro-check.tsx
+./src/app/neuro-check/page.tsx
+ GET /neuro-check 500 in 208ms
+ GET /neuro-check 500 in 56ms
+ GET /neuro-check 500 in 30ms
+ GET /neuro-check 500 in 34ms
+ ✓ Compiled /_not-found in 4.1s (862 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/webpack/1e56b7e0eca02992.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/webpack/1e56b7e0eca02992.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /neuro-check 200 in 632ms
+ GET /_next/static/webpack/1e56b7e0eca02992.webpack.hot-update.json 404 in 4301ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 132ms
+ ✓ Compiled in 3.8s (876 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 325ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 97ms
+ ⨯ ./src/components/neuro-check/interactive-neuro-check.tsx
+Error: 
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/home/user/webapp/src/components/neuro-check/interactive-neuro-check.tsx[0m:428:1]
+ [2m428[0m |               existingStreak = null
+ [2m429[0m |             }
+ [2m430[0m |           } else {
+ [2m431[0m |           } else {
+     : [31;1m            ^^^^[0m
+ [2m432[0m |             console.log('📂 No valid previous day streak found:', {
+ [2m433[0m |               previousStreak,
+ [2m434[0m |               hadEffort: previousParsed.spoon_expansion_efforts?.includes(effortId)
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/neuro-check/interactive-neuro-check.tsx
+./src/app/neuro-check/page.tsx
+ GET /neuro-check 500 in 37ms
+ GET /neuro-check 500 in 48ms
+ GET /neuro-check 500 in 27ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 2.1s (862 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/webpack/1e56b7e0eca02992.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/webpack/1e56b7e0eca02992.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/webpack/1e56b7e0eca02992.webpack.hot-update.json 404 in 2039ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /neuro-check 200 in 134ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 77ms
+ ✓ Compiled in 1298ms (876 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 256ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 84ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 111ms
+ ✓ Compiled in 805ms (511 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1699ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 337ms (511 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1415ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 833ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 298ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 92ms
+ ✓ Compiled in 1814ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🗑️ getHabitStreak(sleep): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'sleep',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(exercise): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'exercise',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(medication): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'medication',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(stress): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'stress',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 268ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🗑️ getHabitStreak(sleep): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'sleep',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(exercise): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'exercise',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(medication): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'medication',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(stress): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'stress',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 93ms
+ ✓ Compiled in 1613ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🗑️ getHabitStreak(sleep): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'sleep',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(exercise): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'exercise',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(medication): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'medication',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(stress): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'stress',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 549ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🗑️ getHabitStreak(sleep): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'sleep',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(exercise): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'exercise',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(medication): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'medication',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(stress): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'stress',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 92ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🗑️ getHabitStreak(sleep): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'sleep',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(exercise): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'exercise',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(medication): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'medication',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(stress): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'stress',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 101ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🗑️ getHabitStreak(sleep): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'sleep',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(exercise): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'exercise',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(medication): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'medication',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🗑️ getHabitStreak(stress): {
+  habitStreaks: [],
+  found: undefined,
+  result: {
+    effort_id: 'stress',
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  }
+}
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 94ms
+ ✓ Compiled in 2.4s (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /neuro-check 200 in 241ms
+ ⨯ src/components/neuro-check/interactive-neuro-check.tsx (500:23) @ localStorage
+ ⨯ ReferenceError: localStorage is not defined
+    at getHabitStreak (./src/components/neuro-check/interactive-neuro-check.tsx:478:27)
+    at eval (./src/components/neuro-check/interactive-neuro-check.tsx:1765:64)
+    at Array.map (<anonymous>)
+    at InteractiveNeuroCheck (./src/components/neuro-check/interactive-neuro-check.tsx:1764:47)
+digest: "1267393799"
+[0m [90m 498 |[39m     [90m// BYPASS REACT STATE - read directly from localStorage for UI display[39m[0m
+[0m [90m 499 |[39m     [36mconst[39m today [33m=[39m getCurrentDate()[0m
+[0m[31m[1m>[22m[39m[90m 500 |[39m     [36mconst[39m savedData [33m=[39m localStorage[33m.[39mgetItem([32m`neuro-check-${today}`[39m)[0m
+[0m [90m     |[39m                       [31m[1m^[22m[39m[0m
+[0m [90m 501 |[39m     [0m
+[0m [90m 502 |[39m     console[33m.[39mlog([32m`🗑️ getHabitStreak(${effortId}) - checking localStorage for ${today}`[39m)[0m
+[0m [90m 503 |[39m     [0m
+ ✓ Compiled in 1370ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1400ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1426ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1366ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1839ms (873 modules)
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 247ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 198ms
+ ⚠ Unsupported metadata viewport is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /neuro-check. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔍 UI Render - sleep: streak = {
+  effort_id: 'sleep',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - exercise: streak = {
+  effort_id: 'exercise',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - medication: streak = {
+  effort_id: 'medication',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+🔍 UI Render - stress: streak = {
+  effort_id: 'stress',
+  current_streak: 0,
+  last_checked_date: '',
+  is_earned: false
+} isChecked = false
+calculateEarnedBonus: 0
+calculateEarnedBonus: 0
+calculateProgressBonus: [] = 0
+calculateCurrentPotential: 5 + earned: 0 + progress: 0 = 5
+calculateProgressBonus: [] = 0
+calculateEarnedBonus: 0
+ GET /neuro-check 200 in 238ms

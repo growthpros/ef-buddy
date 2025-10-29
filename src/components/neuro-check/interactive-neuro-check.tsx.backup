@@ -1,0 +1,1426 @@
+'use client'
+
+import React, { useState, useEffect, useCallback } from 'react'
+import { flushSync } from 'react-dom'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { 
+  Brain, 
+  Zap, 
+  CheckCircle, 
+  Gauge,
+  Heart,
+  Battery,
+  Target,
+  AlertTriangle
+} from 'lucide-react'
+
+// Import the new Supabase streak system
+import {
+  trackEffortStreak,
+  getAllStreakStatus,
+  initializeUserProfile,
+  getTotalEarnedBonus,
+  getTotalProgressBonus,
+  formatStreakDisplay,
+  checkAuth,
+  type StreakStatus,
+  type EffortType
+} from '@/lib/supabase-streaks'
+
+interface NeuroCheckData {
+  mood_level: number
+  energy_units: number
+  focus_capacity: number
+  stress_level: number
+  brain_mode: 'Normal' | 'Fog' | 'Shutdown'
+  burnout_flags: string[]
+  sensory_state: 'understimulated' | 'balanced' | 'overstimulated'
+  sleep_quality: 'poor' | 'fair' | 'good' | 'excellent'
+  notes: string
+  capacity_today?: number
+  spoon_expansion_efforts: string[]
+}
+
+interface HabitStreak {
+  effort_id: string
+  current_streak: number
+  last_checked_date: string
+  is_earned: boolean
+  earned_date?: string
+}
+
+interface NeuroCheckResponse {
+  capacity: number
+  adjustments: {
+    original_energy: number
+    brain_mode_adjustment: number
+    burnout_adjustment: number
+    final_capacity: number
+  }
+}
+
+const burnoutOptions = [
+  { id: 'sleep_disrupted', label: 'Sleep Disrupted' },
+  { id: 'emotional_exhaustion', label: 'Emotional Exhaustion' },
+  { id: 'cognitive_overload', label: 'Cognitive Overload' },
+  { id: 'social_withdrawal', label: 'Social Withdrawal' },
+  { id: 'physical_fatigue', label: 'Physical Fatigue' },
+  { id: 'motivation_loss', label: 'Motivation Loss' },
+  { id: 'irritability_increased', label: 'Increased Irritability' }
+]
+
+export function InteractiveNeuroCheck() {
+  const [checkData, setCheckData] = useState<NeuroCheckData>({
+    mood_level: 5,
+    energy_units: 5,
+    focus_capacity: 5,
+    stress_level: 5,
+    brain_mode: 'Normal',
+    burnout_flags: [],
+    sensory_state: 'balanced',
+    sleep_quality: 'fair',
+    notes: '',
+    spoon_expansion_efforts: []
+  })
+
+  // Separate state for energy to force updates
+  const [energyUnits, setEnergyUnits] = useState(5)
+  // NEW: Supabase-based streak state
+  const [allStreaks, setAllStreaks] = useState<StreakStatus[]>([])
+  const [streaksLoading, setStreaksLoading] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [result, setResult] = useState<NeuroCheckResponse | null>(null)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [updateCounter, setUpdateCounter] = useState(0)
+  const [forceRender, setForceRender] = useState(0)
+  // Demo mode for testing streaks - REMOVED from Supabase version
+  // const [demoMode, setDemoMode] = useState(false)
+  // const [demoDate, setDemoDate] = useState(new Date().toISOString().split('T')[0])
+  
+  // Temporary fallback to localStorage for demo mode until full Supabase migration
+  const [demoMode, setDemoMode] = useState(false)
+  const [demoDate, setDemoDate] = useState(new Date().toISOString().split('T')[0])
+  
+  // Derived state: convert Supabase streaks to old format for backwards compatibility
+  const expansionEfforts = allStreaks
+    .filter(streak => streak.is_current)
+    .map(streak => streak.effort_type)
+  
+  const habitStreaks = allStreaks.map(streak => ({
+    effort_id: streak.effort_type,
+    current_streak: streak.current_streak,
+    last_checked_date: streak.last_action_day || '',
+    is_earned: !!streak.streak_bonus_awarded_on
+  }))
+
+  // Get current date (real or demo)
+  const getCurrentDate = () => demoMode ? demoDate : new Date().toISOString().split('T')[0]
+  
+  // Safe localStorage helper for SSR compatibility (keeping for backwards compatibility)
+  const safeLocalStorage = {
+    getItem: (key: string) => {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return null
+      return localStorage.getItem(key)
+    },
+    setItem: (key: string, value: string) => {
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
+      localStorage.setItem(key, value)
+    }
+  }
+
+  // Load saved data on component mount
+  useEffect(() => {
+    console.log('🔄 LOADING DATA for date:', getCurrentDate(), 'Demo mode:', demoMode)
+    
+    const today = getCurrentDate()
+    const savedDataKey = `neuro-check-${today}`
+    const savedData = safeLocalStorage.getItem(savedDataKey)
+    
+    console.log('💾 Looking for key:', savedDataKey)
+    console.log('📂 Found data:', savedData ? 'YES' : 'NO')
+    
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData)
+        console.log('📋 Parsed data:', parsed)
+        
+        setCheckData(prevData => ({
+          ...prevData,
+          ...parsed,
+          // Ensure we have the new fields for backwards compatibility
+          spoon_expansion_efforts: parsed.spoon_expansion_efforts || []
+        }))
+        
+        // Sync the separate states
+        setEnergyUnits(parsed.energy_units || 5)
+        // Note: expansionEfforts now derived from allStreaks, no direct setter needed
+        // setExpansionEfforts(parsed.spoon_expansion_efforts || [])
+        
+        // For habitStreaks, load from current day OR inherit from previous day
+        let streaksToLoad = parsed.habit_streaks || []
+        console.log('📈 Initial streaks from current day:', streaksToLoad)
+        
+        // ALWAYS try to inherit from previous day to ensure continuity
+        const prevDate = new Date(today)
+        prevDate.setDate(prevDate.getDate() - 1)
+        const previousDay = prevDate.toISOString().split('T')[0]
+        console.log('🔍 Checking for inheritance from:', previousDay)
+        
+        const previousDayData = localStorage.getItem(`neuro-check-${previousDay}`)
+        if (previousDayData) {
+          try {
+            const previousParsed = JSON.parse(previousDayData)
+            const previousStreaks = previousParsed.habit_streaks || []
+            const previousEfforts = previousParsed.spoon_expansion_efforts || []
+            
+            console.log('📊 Previous day data found:', {
+              date: previousDay,
+              efforts: previousEfforts,
+              streaks: previousStreaks
+            })
+            
+            if (previousStreaks.length > 0) {
+              // If current day has no streaks, inherit all from previous day
+              if (streaksToLoad.length === 0) {
+                console.log('📈 No current streaks - inheriting ALL from previous day:', previousStreaks)
+                streaksToLoad = previousStreaks
+              } else {
+                // Merge streaks: use previous day streaks if they're more recent
+                console.log('🔄 Merging streaks from previous and current day')
+                previousStreaks.forEach((prevStreak: HabitStreak) => {
+                  const currentStreak = streaksToLoad.find((s: HabitStreak) => s.effort_id === prevStreak.effort_id)
+                  if (!currentStreak && previousEfforts.includes(prevStreak.effort_id)) {
+                    console.log(`➕ Adding missing streak from previous day: ${prevStreak.effort_id}`)
+                    streaksToLoad.push(prevStreak)
+                  }
+                })
+              }
+            }
+          } catch (e) {
+            console.log('❌ Could not inherit from previous day:', e)
+          }
+        } else {
+          console.log('📂 No previous day data found for inheritance')
+        }
+        
+        setHabitStreaks(streaksToLoad)
+        
+        console.log('🔄 Final loaded states:', {
+          date: today,
+          energyUnits: parsed.energy_units || 5,
+          expansionEfforts: parsed.spoon_expansion_efforts || [],
+          habitStreaks: streaksToLoad,
+          inheritanceApplied: streaksToLoad !== (parsed.habit_streaks || [])
+        })
+        
+        // If there's a capacity result saved, restore it
+        if (parsed.capacity_today) {
+          setResult({
+            capacity: parsed.capacity_today,
+            adjustments: parsed.adjustments || {
+              original_energy: parsed.energy_units || 5,
+              brain_mode_adjustment: 0,
+              burnout_adjustment: 0,
+              final_capacity: parsed.capacity_today
+            }
+          })
+        }
+      } catch (error) {
+        console.error('❌ Failed to load saved neuro-check data:', error)
+      }
+    } else {
+      console.log('🔄 No saved data found, resetting to defaults')
+      // Reset to defaults when no data found
+      setCheckData({
+        mood_level: 5,
+        energy_units: 5,
+        focus_capacity: 5,
+        stress_level: 5,
+        brain_mode: 'Normal',
+        burnout_flags: [],
+        sensory_state: 'balanced',
+        sleep_quality: 'fair',
+        notes: '',
+        spoon_expansion_efforts: []
+      })
+      setEnergyUnits(5)
+      setExpansionEfforts([])
+      setHabitStreaks([])
+      setResult(null)
+      setShowSuccess(false)
+    }
+    setIsLoaded(true)
+  }, [demoMode, demoDate])
+
+  // Save data to localStorage whenever any relevant state changes
+  useEffect(() => {
+    if (!isLoaded) return // Don't save until we've loaded initial data
+    
+    const today = getCurrentDate()
+    const savedDataKey = `neuro-check-${today}`
+    
+    const dataToSave = {
+      ...checkData,
+      energy_units: energyUnits, // Use the separate state
+      spoon_expansion_efforts: expansionEfforts, // Use the separate state
+      habit_streaks: habitStreaks,
+      capacity_today: result?.capacity,
+      adjustments: result?.adjustments,
+      last_updated: new Date().toISOString()
+    }
+    
+    localStorage.setItem(savedDataKey, JSON.stringify(dataToSave))
+    console.log('💾 Auto-saved data for', today, ':', dataToSave)
+  }, [checkData, result, energyUnits, allStreaks, isLoaded, demoMode, demoDate])
+
+
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    
+    try {
+      const response = await fetch('/api/adjust-capacity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          energy_units: energyUnits,
+          brain_mode: checkData.brain_mode,
+          burnout_flags: checkData.burnout_flags
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to adjust capacity')
+      }
+
+      const capacityResult: NeuroCheckResponse = await response.json()
+      setResult(capacityResult)
+      setShowSuccess(true)
+      
+      // Save to localStorage for persistence
+      const today = new Date().toISOString().split('T')[0]
+      // Save daily data
+      const dailyData = {
+        ...checkData,
+        energy_units: energyUnits,
+        capacity_today: capacityResult.capacity,
+        completed_at: new Date().toISOString()
+      }
+      safeLocalStorage.setItem(`neuro-check-${today}`, JSON.stringify(dailyData))
+      
+      // Also save to trend history
+      const trendHistory = JSON.parse(localStorage.getItem('neuro-trend-history') || '[]')
+      const trendEntry = { 
+        date: today, 
+        energy_units: energyUnits,
+        capacity_today: capacityResult.capacity,
+        brain_mode: checkData.brain_mode,
+        burnout_flags: checkData.burnout_flags,
+        spoon_expansion_efforts: expansionEfforts,
+        habit_streaks: habitStreaks,
+        completed_at: new Date().toISOString()
+      }
+      
+      console.log('💾 Saving trend entry:', trendEntry)
+      
+      const existingIndex = trendHistory.findIndex((entry: any) => entry.date === today)
+      if (existingIndex >= 0) {
+        trendHistory[existingIndex] = trendEntry
+        console.log('📝 Updated existing trend entry')
+      } else {
+        trendHistory.push(trendEntry)
+        console.log('➕ Added new trend entry')
+      }
+      
+      // Keep only last 30 days
+      trendHistory.sort((a: any, b: any) => b.date.localeCompare(a.date))
+      const recent = trendHistory.slice(0, 30)
+      localStorage.setItem('neuro-trend-history', JSON.stringify(recent))
+      console.log('📊 Saved trend history:', recent.length, 'entries')
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => setShowSuccess(false), 5000)
+
+    } catch (error) {
+      console.error('Failed to submit neuro-check:', error)
+      alert('Failed to calculate capacity. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const getMoodEmoji = (level: number): string => {
+    const emojis = ['😢', '😟', '😕', '😐', '🙂', '😊', '😄', '😆', '😁', '🤩']
+    return emojis[Math.max(0, Math.min(9, level - 1))] || '😐'
+  }
+
+  const getCapacityColor = (capacity: number) => {
+    if (capacity <= 3) return 'text-red-600'
+    if (capacity <= 6) return 'text-yellow-600'
+    return 'text-green-600'
+  }
+
+  const getCapacityDescription = (capacity: number) => {
+    if (capacity <= 2) return 'Rest day - minimal tasks only'
+    if (capacity <= 4) return 'Low energy - focus on essentials'
+    if (capacity <= 6) return 'Moderate capacity - normal pace'
+    if (capacity <= 8) return 'Good energy - productive day possible'
+    return 'High capacity - tackle challenging tasks'
+  }
+
+  const toggleBurnoutFlag = (flagId: string) => {
+    setCheckData(prev => ({
+      ...prev,
+      burnout_flags: prev.burnout_flags.includes(flagId)
+        ? prev.burnout_flags.filter(id => id !== flagId)
+        : [...prev.burnout_flags, flagId]
+    }))
+  }
+
+  const toggleSpoonExpansionEffort = (effortId: string) => {
+    console.log('🎯 SIMPLE WORKING STREAK LOGIC - Starting for:', effortId)
+    
+    // Simple approach: update the allStreaks state directly for now
+    const currentlyChecked = allStreaks.find(s => s.effort_type === effortId && s.is_current)
+    
+    if (currentlyChecked) {
+      // Unchecking - remove current status
+      console.log('❌ Unchecking:', effortId)
+      setAllStreaks(prev => prev.map(streak => 
+        streak.effort_type === effortId 
+          ? { ...streak, is_current: false, last_action_day: null }
+          : streak
+      ))
+    } else {
+      // Checking - add or increment streak
+      console.log('✅ Checking:', effortId)
+      const today = getCurrentDate()
+      
+      setAllStreaks(prev => prev.map(streak => {
+        if (streak.effort_type === effortId) {
+          const newStreak = streak.current_streak + 1
+          const bonusAwarded = newStreak === 5 && !streak.streak_bonus_awarded_on
+          
+          return {
+            ...streak,
+            is_current: true,
+            last_action_day: today,
+            current_streak: newStreak,
+            best_streak: Math.max(streak.best_streak, newStreak),
+            streak_bonus_awarded_on: bonusAwarded ? today : streak.streak_bonus_awarded_on
+          }
+        }
+        return streak
+      }))
+      
+      console.log('🎉 Updated streak for:', effortId)
+    }
+    
+    // Force a re-render
+    setUpdateCounter(prev => prev + 1)
+  }
+  
+  // Helper function to get habit streak (for backwards compatibility)
+  const getHabitStreak = (effortId: string) => {
+    const streak = allStreaks.find(s => s.effort_type === effortId)
+    if (!streak) {
+      return {
+        effort_id: effortId,
+        current_streak: 0,
+        last_checked_date: '',
+        is_earned: false
+      }
+    }
+    
+    return {
+      effort_id: streak.effort_type,
+      current_streak: streak.current_streak,
+      last_checked_date: streak.last_action_day || '',
+      is_earned: !!streak.streak_bonus_awarded_on
+    }
+  }
+  }
+  
+  // Checking - calculate new streak
+  console.log('✅ Checking effort:', effortId, 'on date:', today)
+  
+  // Find existing streak for this effort
+  const existingStreak = habitStreaks.find(s => s.effort_id === effortId)
+  console.log('📊 Found existing streak:', existingStreak)
+  
+  let newStreakCount = 1 // Default: start new streak
+  
+  if (existingStreak) {
+    // If we already have a streak, check if we should increment
+    const lastCheckedDate = existingStreak.last_checked_date
+    console.log('📅 Last checked:', lastCheckedDate, 'Today:', today)
+    
+    if (lastCheckedDate !== today) {
+      // Different day - increment the streak
+      newStreakCount = existingStreak.current_streak + 1
+      console.log('📈 Different day - incrementing streak to:', newStreakCount)
+    } else {
+      // Same day - keep existing count
+      newStreakCount = existingStreak.current_streak
+      console.log('📋 Same day - keeping streak at:', newStreakCount)
+    }
+  } else {
+    console.log('🆕 No existing streak - starting at 1')
+  }
+  
+  // Create the new streak object
+  const newStreak: HabitStreak = {
+    effort_id: effortId,
+    current_streak: newStreakCount,
+    last_checked_date: today,
+    is_earned: newStreakCount >= 5,
+    earned_date: newStreakCount === 5 ? today : undefined
+  }
+  
+  console.log('🏆 Created new streak object:', newStreak)
+  
+  // Update states
+  const newEfforts = [...expansionEfforts, effortId]
+  const newStreaks = existingStreak 
+    ? habitStreaks.map(s => s.effort_id === effortId ? newStreak : s)
+    : [...habitStreaks, newStreak]
+  
+  console.log('🔄 Final efforts:', newEfforts)
+  console.log('🔄 Final streaks:', newStreaks)
+  
+  // Save immediately to localStorage to avoid race conditions
+  const dataToSave = {
+    ...checkData,
+    energy_units: energyUnits,
+    spoon_expansion_efforts: newEfforts,
+    habit_streaks: newStreaks,
+    last_updated: new Date().toISOString()
+  }
+  
+  safeLocalStorage.setItem(`neuro-check-${today}`, JSON.stringify(dataToSave))
+  console.log('💾 Saved to localStorage immediately')
+  
+  // Update React state with forced re-render
+  console.log('🔄 FORCING STATE UPDATE with:', newStreaks)
+  
+  // Force a complete state replacement to ensure React detects the change
+  setHabitStreaks([...newStreaks]) // Create new array reference
+  setExpansionEfforts([...newEfforts]) // Create new array reference
+  setCheckData(prev => ({ 
+    ...prev, 
+    spoon_expansion_efforts: [...newEfforts], 
+    habit_streaks: [...newStreaks] 
+  }))
+  setUpdateCounter(prev => prev + 1)
+  setForceRender(prev => prev + 1)
+  
+  // Additional forced update
+  setTimeout(() => {
+    console.log('🚨 EMERGENCY UPDATE - forcing another state update')
+    setHabitStreaks([...newStreaks])
+    setForceRender(prev => prev + 1)
+  }, 50)
+  
+  console.log('✅ SIMPLE STREAK LOGIC - Complete!')
+  
+  // Force a re-render to make sure UI updates
+  setTimeout(() => {
+    console.log('🔍 DELAYED CHECK - habitStreaks after 100ms:', habitStreaks.map(s => `${s.effort_id}:${s.current_streak}`))
+  }, 100)
+  
+  // Helper function to get previous day
+  const getPreviousDay = (dateString: string): string => {
+    const date = new Date(dateString)
+    date.setDate(date.getDate() - 1)
+    return date.toISOString().split('T')[0]
+  }
+
+  // Get trend analysis
+  const getTrendAnalysis = () => {
+    const trendHistory = JSON.parse(localStorage.getItem('neuro-trend-history') || '[]')
+    if (trendHistory.length === 0) return null
+
+    const recent7Days = trendHistory.slice(0, 7)
+    const avgEnergy = recent7Days.reduce((sum: number, day: any) => sum + (day.energy_units || 0), 0) / recent7Days.length
+    const avgCapacity = recent7Days.reduce((sum: number, day: any) => sum + (day.capacity_today || 0), 0) / recent7Days.length
+
+    return {
+      totalDays: trendHistory.length,
+      avgEnergy: Math.round(avgEnergy * 10) / 10,
+      avgCapacity: Math.round(avgCapacity * 10) / 10,
+      recentTrend: recent7Days.map((day: any) => `${day.date}: ${day.energy_units}→${day.capacity_today || '?'}`),
+      habitProgress: trendHistory.reduce((acc: any, day: any) => {
+        if (day.spoon_expansion_efforts) {
+          day.spoon_expansion_efforts.forEach((effort: string) => {
+            acc[effort] = (acc[effort] || 0) + 1
+          })
+        }
+        return acc
+      }, {})
+    }
+  }
+
+  // Helper function to update energy in both states
+  const updateEnergyUnits = (newValue: number) => {
+    console.log('updateEnergyUnits called with:', newValue)
+    setEnergyUnits(newValue)
+    setCheckData(prev => ({ ...prev, energy_units: newValue }))
+    setUpdateCounter(prev => prev + 1)
+  }
+
+  // Initialize habit streaks for new habits
+  const initializeHabitStreak = (effortId: string): HabitStreak => ({
+    effort_id: effortId,
+    current_streak: 0,
+    last_checked_date: '',
+    is_earned: false
+  })
+
+  // Get habit streak for an effort, looking backwards through previous days
+  const getHabitStreak = (effortId: string): HabitStreak => {
+    // Check if we're in browser environment (not SSR)
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return initializeHabitStreak(effortId)
+    }
+    
+    const today = getCurrentDate()
+    console.log(`🔍 getHabitStreak(${effortId}) - searching from ${today} backwards...`)
+    
+    // First, check today's data
+    const todayData = safeLocalStorage.getItem(`neuro-check-${today}`)
+    if (todayData) {
+      try {
+        const parsed = JSON.parse(todayData)
+        const streaks = parsed.habit_streaks || []
+        const found = streaks.find((s: any) => s.effort_id === effortId)
+        if (found) {
+          console.log(`✅ getHabitStreak(${effortId}) FROM TODAY:`, found)
+          return found
+        }
+      } catch (e) {
+        console.log('❌ Could not parse today\'s localStorage data')
+      }
+    }
+    
+    // If not found today, look backwards up to 30 days to find the most recent streak
+    for (let daysBack = 1; daysBack <= 30; daysBack++) {
+      const checkDate = new Date(today)
+      checkDate.setDate(checkDate.getDate() - daysBack)
+      const dateStr = checkDate.toISOString().split('T')[0]
+      
+      const previousData = safeLocalStorage.getItem(`neuro-check-${dateStr}`)
+      if (previousData) {
+        try {
+          const parsed = JSON.parse(previousData)
+          const streaks = parsed.habit_streaks || []
+          const found = streaks.find((s: any) => s.effort_id === effortId)
+          if (found) {
+            console.log(`📅 getHabitStreak(${effortId}) FROM ${dateStr} (${daysBack} days ago):`, found)
+            
+            // Check if this is a consecutive streak (last checked within 2 days ago)
+            const daysSinceLastChecked = Math.floor((new Date(today).getTime() - new Date(found.last_checked_date).getTime()) / (1000 * 60 * 60 * 24))
+            
+            if (daysSinceLastChecked <= 1) {
+              // Recent streak - return it so it can be continued
+              console.log(`🔗 Streak is recent (${daysSinceLastChecked} days ago) - can continue`)
+              return found
+            } else {
+              // Old streak - reset
+              console.log(`💔 Streak is too old (${daysSinceLastChecked} days ago) - resetting`)
+              break
+            }
+          }
+        } catch (e) {
+          console.log(`❌ Could not parse data for ${dateStr}`)
+        }
+      }
+    }
+    
+    const result = initializeHabitStreak(effortId)
+    console.log(`🆕 getHabitStreak(${effortId}) NO RECENT STREAK - starting fresh:`, result)
+    return result
+  }
+
+  // Calculate earned bonuses from completed streaks
+  const calculateEarnedBonus = () => {
+    let bonus = 0
+    habitStreaks.forEach(streak => {
+      if (streak.is_earned) {
+        switch(streak.effort_id) {
+          case 'sleep':
+            bonus += 2
+            break
+          case 'exercise':
+            bonus += 2
+            break
+          case 'medication':
+            bonus += 3
+            break
+          case 'stress':
+            bonus += 2
+            break
+        }
+      }
+    })
+    console.log('calculateEarnedBonus:', bonus)
+    return bonus
+  }
+
+  // Calculate progress bonuses (not yet earned, but working towards)
+  const calculateProgressBonus = () => {
+    let bonus = 0
+    expansionEfforts.forEach(effort => {
+      const streak = getHabitStreak(effort)
+      if (!streak.is_earned) { // Only count if not already earned
+        switch(effort) {
+          case 'sleep':
+            bonus += 2
+            break
+          case 'exercise':
+            bonus += 2
+            break
+          case 'medication':
+            bonus += 3
+            break
+          case 'stress':
+            bonus += 2
+            break
+        }
+      }
+    })
+    console.log('calculateProgressBonus:', expansionEfforts, '=', bonus)
+    return bonus
+  }
+
+  // Calculate current potential capacity including boosters and efforts
+  const calculateCurrentPotential = () => {
+    const earnedBonus = calculateEarnedBonus()
+    const progressBonus = calculateProgressBonus()
+    const potential = energyUnits + earnedBonus + progressBonus
+    console.log('calculateCurrentPotential:', energyUnits, '+ earned:', earnedBonus, '+ progress:', progressBonus, '=', potential)
+    return Math.min(potential, 10) // Cap at 10 spoons
+  }
+
+  return (
+    <Card className="w-full max-w-3xl mx-auto">
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10 rounded-lg">
+          <div className="flex items-center gap-2 text-gray-600">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+            <span className="text-sm">Loading your daily check...</span>
+          </div>
+        </div>
+      )}
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Brain className="h-6 w-6 text-blue-500" />
+          Interactive Daily Neuro-Check
+          {result && (
+            <Badge variant="secondary" className="ml-auto">
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Completed
+            </Badge>
+          )}
+        </CardTitle>
+        
+        {result && (
+          <Alert className="mt-4">
+            <Gauge className="h-4 w-4" />
+            <AlertDescription>
+              <div className="flex items-center justify-between">
+                <span>Today's Calculated Capacity:</span>
+                <div className="text-right">
+                  <span className={`text-xl font-bold ${getCapacityColor(result.capacity)}`}>
+                    {result.capacity}/10 spoons
+                  </span>
+                  <br />
+                  <span className="text-sm text-gray-600">
+                    {getCapacityDescription(result.capacity)}
+                  </span>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {isLoaded && localStorage.getItem(`neuro-check-${getCurrentDate()}`) && (
+          <Alert className="border-blue-500 bg-blue-50 mt-2">
+            <CheckCircle className="h-4 w-4 text-blue-500" />
+            <AlertDescription className="text-blue-700">
+              <strong>Welcome back!</strong> Your morning check-in data has been restored. You can update your spoons or recalculate as needed throughout the day.
+              {demoMode && <span className="ml-2 text-purple-700">🧪 <strong>DEMO MODE</strong> - Date: {demoDate}</span>}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Demo Mode Controls */}
+        <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-sm font-medium text-purple-800">🧪 Testing & Trends</div>
+            <button
+              onClick={() => {
+                const trendHistory = localStorage.getItem('neuro-trend-history')
+                console.log('📊 Raw trend data:', trendHistory)
+                
+                const analysis = getTrendAnalysis()
+                console.log('📈 Analysis result:', analysis)
+                
+                if (analysis) {
+                  const habitText = Object.entries(analysis.habitProgress).length > 0 
+                    ? Object.entries(analysis.habitProgress).map(([habit, count]) => 
+                        `• ${habit}: ${count}/${analysis.totalDays} days (${Math.round((count as number) / analysis.totalDays * 100)}%)`
+                      ).join('\n')
+                    : '• No habits tracked yet'
+                  
+                  alert(`📊 Your Spoon Trends\n\n` +
+                    `📈 Summary (${analysis.totalDays} days):\n` +
+                    `• Avg Morning Energy: ${analysis.avgEnergy} spoons\n` +
+                    `• Avg Final Capacity: ${analysis.avgCapacity} spoons\n\n` +
+                    `🏆 Habit Consistency:\n${habitText}\n\n` +
+                    `📅 Recent History:\n` +
+                    analysis.recentTrend.slice(0, 5).join('\n') +
+                    `\n\n🔧 Debug: ${analysis.totalDays} total entries stored`)
+                } else {
+                  alert('📊 No trend data yet!\n\n' +
+                    'To start tracking:\n' +
+                    '1. Set your energy level\n' +
+                    '2. Click "Calculate My Daily Capacity"\n' +
+                    '3. Data will be saved automatically\n\n' +
+                    `🔧 Debug: Raw data = ${trendHistory ? 'exists' : 'null'}`)
+                }
+              }}
+              className="text-xs px-2 py-1 bg-purple-200 hover:bg-purple-300 rounded"
+            >
+              View Trends
+            </button>
+            <button
+              onClick={() => {
+                console.log('🔍 DEBUG STATE:', {
+                  expansionEfforts,
+                  habitStreaks,
+                  energyUnits,
+                  demoMode,
+                  demoDate,
+                  currentDate: getCurrentDate(),
+                  localStorage_daily: localStorage.getItem(`neuro-check-${getCurrentDate()}`),
+                  localStorage_trends: localStorage.getItem('neuro-trend-history')
+                })
+                alert('🔍 Debug info logged to console (F12)')
+              }}
+              className="text-xs px-2 py-1 bg-yellow-200 hover:bg-yellow-300 rounded ml-1"
+            >
+              Debug
+            </button>
+          </div>
+          
+          <div className="flex items-center gap-2 text-sm">
+            <label className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                checked={demoMode}
+                onChange={(e) => setDemoMode(e.target.checked)}
+                className="w-3 h-3"
+              />
+              <span className="text-purple-700">Demo Mode (simulate days)</span>
+            </label>
+            
+            {demoMode && (
+              <div className="flex items-center gap-1 flex-wrap">
+                <button
+                  onClick={() => {
+                    const currentDate = new Date(demoDate)
+                    currentDate.setDate(currentDate.getDate() + 1)
+                    const newDate = currentDate.toISOString().split('T')[0]
+                    console.log('📅 ADVANCING TO DAY:', newDate)
+                    console.log('🏆 Current habitStreaks before day change:', habitStreaks)
+                    setDemoDate(newDate)
+                  }}
+                  className="px-2 py-1 bg-green-200 hover:bg-green-300 rounded text-xs"
+                >
+                  Next Day →
+                </button>
+                <button
+                  onClick={() => {
+                    const currentDate = new Date(demoDate)
+                    currentDate.setDate(currentDate.getDate() - 1)
+                    setDemoDate(currentDate.toISOString().split('T')[0])
+                  }}
+                  className="px-2 py-1 bg-orange-200 hover:bg-orange-300 rounded text-xs"
+                >
+                  ← Prev Day
+                </button>
+                <button
+                  onClick={() => {
+                    // Clear all demo data
+                    const keys = Object.keys(localStorage).filter(key => key.startsWith('neuro-check-'))
+                    keys.forEach(key => localStorage.removeItem(key))
+                    localStorage.removeItem('neuro-trend-history')
+                    
+                    // Reset to today
+                    setDemoDate(new Date().toISOString().split('T')[0])
+                    
+                    // Force reload
+                    window.location.reload()
+                  }}
+                  className="px-2 py-1 bg-red-200 hover:bg-red-300 rounded text-xs"
+                >
+                  Clear All Demo Data
+                </button>
+                <span className="text-xs text-purple-600">Date: {demoDate}</span>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {showSuccess && (
+          <Alert className="border-green-500 bg-green-50 mt-2">
+            <CheckCircle className="h-4 w-4 text-green-500" />
+            <AlertDescription className="text-green-700">
+              <strong>Success!</strong> Your daily capacity has been calculated using the Dynamic Capacity System.
+              {result && (
+                <div className="mt-2 text-sm">
+                  <strong>Breakdown:</strong> {result.adjustments.original_energy} energy units
+                  {result.adjustments.brain_mode_adjustment < 0 && ` - ${Math.abs(result.adjustments.brain_mode_adjustment)} (${checkData.brain_mode})`}
+                  {result.adjustments.burnout_adjustment < 0 && ` - ${Math.abs(result.adjustments.burnout_adjustment)} (burnout protection)`}
+                  {' = '}{result.capacity} final capacity
+                </div>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
+      </CardHeader>
+      
+      <CardContent className="space-y-8">
+        {/* Mood Level */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Heart className="h-4 w-4 text-red-500" />
+              Mood Level
+            </label>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">{getMoodEmoji(checkData.mood_level)}</span>
+              <span className="text-sm text-gray-600" key={checkData.mood_level}>{checkData.mood_level}/10</span>
+            </div>
+          </div>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={checkData.mood_level}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value)
+              setCheckData(prev => ({ ...prev, mood_level: newValue }))
+            }}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>😢 Very Low</span>
+            <span>🤩 Excellent</span>
+          </div>
+        </div>
+
+        {/* Energy Units */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Battery className="h-4 w-4 text-blue-500" />
+              Energy Units (Spoons You Woke Up With)
+            </label>
+            <span className="text-sm text-gray-600" key={`energy-${energyUnits}-${updateCounter}`}>{energyUnits}/10 spoons</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="10"
+            value={energyUnits}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value)
+              updateEnergyUnits(newValue)
+            }}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>0 Exhausted</span>
+            <span>10 Energized</span>
+          </div>
+          {/* Spoon visualization */}
+          <div className="flex justify-center gap-1" key={`spoons-${energyUnits}-${updateCounter}`}>
+            {Array.from({ length: 10 }, (_, i) => (
+              <span key={`spoon-${i}`} className={`text-lg ${i < energyUnits ? 'opacity-100' : 'opacity-20'}`}>
+                🥄
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Focus Capacity */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Target className="h-4 w-4 text-green-500" />
+              Focus Capacity
+            </label>
+            <span className="text-sm text-gray-600" key={checkData.focus_capacity}>{checkData.focus_capacity}/10</span>
+          </div>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={checkData.focus_capacity}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value)
+              setCheckData(prev => ({ ...prev, focus_capacity: newValue }))
+            }}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+        </div>
+
+        {/* Stress Level */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <AlertTriangle className="h-4 w-4 text-orange-500" />
+              Stress Level
+            </label>
+            <span className="text-sm text-gray-600" key={checkData.stress_level}>{checkData.stress_level}/10</span>
+          </div>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={checkData.stress_level}
+            onChange={(e) => {
+              const newValue = parseInt(e.target.value)
+              setCheckData(prev => ({ ...prev, stress_level: newValue }))
+            }}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+        </div>
+
+        {/* Brain Mode */}
+        <div className="space-y-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <Brain className="h-4 w-4 text-purple-500" />
+            Brain Mode (affects capacity calculation)
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {(['Normal', 'Fog', 'Shutdown'] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setCheckData(prev => ({ ...prev, brain_mode: mode }))}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  checkData.brain_mode === mode
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="text-left">
+                  <div className="font-medium">{mode}</div>
+                  <div className="text-sm text-gray-600">
+                    {mode === 'Normal' && 'No adjustment'}
+                    {mode === 'Fog' && '-2 capacity'}
+                    {mode === 'Shutdown' && '-4 capacity'}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Burnout Indicators */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <AlertTriangle className="h-4 w-4 text-red-500" />
+              Burnout Indicators
+            </label>
+            <Badge variant={checkData.burnout_flags.length >= 3 ? "danger" : "secondary"}>
+              {checkData.burnout_flags.length} selected
+            </Badge>
+          </div>
+          
+          {checkData.burnout_flags.length >= 3 && (
+            <Alert className="border-orange-500 bg-orange-50">
+              <AlertTriangle className="h-4 w-4 text-orange-500" />
+              <AlertDescription className="text-orange-700">
+                <strong>Burnout Protection Active:</strong> 3+ indicators will reduce your capacity by 3 points.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {burnoutOptions.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => toggleBurnoutFlag(option.id)}
+                className={`p-3 rounded-lg border text-left transition-all ${
+                  checkData.burnout_flags.includes(option.id)
+                    ? 'border-orange-500 bg-orange-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                    checkData.burnout_flags.includes(option.id)
+                      ? 'border-orange-500 bg-orange-500'
+                      : 'border-gray-300'
+                  }`}>
+                    {checkData.burnout_flags.includes(option.id) && (
+                      <CheckCircle className="h-3 w-3 text-white" />
+                    )}
+                  </div>
+                  <span className="text-sm font-medium">{option.label}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Additional Inputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Sensory State</label>
+            <select 
+              value={checkData.sensory_state}
+              onChange={(e) => setCheckData(prev => ({ 
+                ...prev, 
+                sensory_state: e.target.value as typeof checkData.sensory_state 
+              }))}
+              className="w-full p-3 border rounded-lg text-sm"
+            >
+              <option value="understimulated">Under-stimulated</option>
+              <option value="balanced">Balanced</option>
+              <option value="overstimulated">Over-stimulated</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="text-sm font-medium mb-2 block">Sleep Quality</label>
+            <select 
+              value={checkData.sleep_quality}
+              onChange={(e) => setCheckData(prev => ({ 
+                ...prev, 
+                sleep_quality: e.target.value as typeof checkData.sleep_quality 
+              }))}
+              className="w-full p-3 border rounded-lg text-sm"
+            >
+              <option value="poor">Poor</option>
+              <option value="fair">Fair</option>
+              <option value="good">Good</option>
+              <option value="excellent">Excellent</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Spoon Expansion Progress */}
+        <div className="space-y-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <Target className="h-4 w-4 text-blue-500" />
+            Spoon Expansion Progress (Building long-term capacity)
+          </label>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div className="text-sm font-medium text-gray-700">This Week's Efforts:</div>
+              
+              {/* Debug test button */}
+              <button 
+                onClick={() => {
+                  console.log('🧪 TEST BUTTON CLICKED - This should work')
+                  console.log('🧪 Function exists:', typeof toggleSpoonExpansionEffort)
+                  toggleSpoonExpansionEffort('sleep')
+                }}
+                className="mb-2 px-2 py-1 bg-red-200 rounded text-xs"
+              >
+                🧪 Test Toggle Sleep (Debug)
+              </button>
+              
+              <div className="mb-2 text-xs bg-yellow-100 p-2 rounded" key={`${updateCounter}-${forceRender}`}>
+                DEBUG: Function type = {typeof toggleSpoonExpansionEffort}<br/>
+                expansionEfforts = {JSON.stringify(expansionEfforts)}<br/>
+                habitStreaks = {JSON.stringify(habitStreaks)} (length: {habitStreaks.length})<br/>
+                Sleep streak = {JSON.stringify(habitStreaks.find(s => s.effort_id === 'sleep'))}<br/>
+                updateCounter = {updateCounter}, forceRender = {forceRender}<br/>
+                Current date = {getCurrentDate()}
+              </div>
+              
+              {[
+                { id: 'sleep', label: '😴 Improved Sleep (7+ hours)', boost: '+2 spoons when earned' },
+                { id: 'exercise', label: '🏃 Regular Exercise (10+ min)', boost: '+2 spoons when earned' },
+                { id: 'medication', label: '💊 Medication Optimization', boost: '+3 spoons when earned' },
+                { id: 'stress', label: '🧘 Stress Management', boost: '+2 spoons when earned' }
+              ].map((item) => {
+                const streak = getHabitStreak(item.id)
+                const isChecked = expansionEfforts.includes(item.id)
+                
+                console.log(`🔍 UI Render - ${item.id}: streak =`, streak, 'isChecked =', isChecked)
+                
+                return (
+                  <div key={`${item.id}-${streak.current_streak}-${isChecked}-${forceRender}`} className={`border rounded-lg p-2 ${streak.is_earned ? 'bg-green-50 border-green-300' : ''}`}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        console.log('🔥 CHECKBOX BUTTON CLICKED:', item.id)
+                        console.log('📅 Current date:', getCurrentDate())
+                        console.log('📊 Current expansionEfforts:', expansionEfforts)
+                        console.log('🏆 Current habitStreaks:', habitStreaks)
+                        toggleSpoonExpansionEffort(item.id)
+                      }}
+                      className={`w-full flex items-center gap-3 text-left p-2 rounded transition-colors ${
+                        isChecked ? 'bg-blue-100 hover:bg-blue-200' : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
+                        isChecked ? 'bg-blue-600 border-blue-600' : 'border-gray-300'
+                      }`}>
+                        {isChecked && <span className="text-white text-xs">✓</span>}
+                      </div>
+                      <div className="flex-1 text-sm">
+                        <div className="font-medium flex items-center gap-2">
+                          {item.label}
+                          {streak.is_earned && <span className="text-green-600">✅ Earned!</span>}
+                        </div>
+                        <div className="text-xs text-gray-500">{item.boost}</div>
+                        {!streak.is_earned && streak.current_streak > 0 && (
+                          <div className="text-xs text-blue-600 font-medium">
+                            Streak: {streak.current_streak}/5 days ({5 - streak.current_streak} more to earn bonus!)
+                          </div>
+                        )}
+                        {streak.is_earned && (
+                          <div className="text-xs text-green-600 font-medium">
+                            ✅ Bonus earned on {streak.earned_date}
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="text-sm font-medium text-green-800 mb-2">💡 Today's Spoon Plan</div>
+              <div className="text-sm text-green-700 space-y-1" key={`capacity-${energyUnits}-${expansionEfforts.length}-${habitStreaks.length}-${updateCounter}`}>
+                <p>• Current capacity: <strong>{energyUnits + calculateEarnedBonus()} spoons</strong></p>
+                <p>• With today's efforts: <strong>{calculateCurrentPotential()} spoons</strong></p>
+                <p>• Improvement in Progress: <strong>+{calculateProgressBonus()} spoons</strong></p>
+                {calculateEarnedBonus() > 0 && (
+                  <p className="text-xs text-green-600 mt-2">
+                    🎉 You've earned <strong>+{calculateEarnedBonus()} permanent spoons</strong> from completed streaks!
+                  </p>
+                )}
+                {expansionEfforts.length === 0 && (
+                  <p className="text-xs text-green-600 mt-2">
+                    💡 Check the boxes above to start building habits for permanent capacity increases!
+                  </p>
+                )}
+                {expansionEfforts.length > 0 && calculateProgressBonus() > 0 && (
+                  <p className="text-xs text-green-600 mt-2">
+                    🔥 Keep going! You're working towards <strong>+{calculateProgressBonus()} permanent spoons</strong>!
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div>
+          <label className="text-sm font-medium mb-2 block">Notes (Optional)</label>
+          <textarea
+            value={checkData.notes}
+            onChange={(e) => setCheckData(prev => ({ ...prev, notes: e.target.value }))}
+            placeholder="How are you feeling today? Any specific concerns or observations? What spoon boosters did you try?"
+            maxLength={1000}
+            className="w-full p-3 border rounded-lg resize-none"
+            rows={3}
+          />
+        </div>
+
+        {/* Spoon Booster Actions */}
+        <div className="space-y-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <Zap className="h-4 w-4 text-green-500" />
+            Quick Spoon Boosters (Add energy right now)
+          </label>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                console.log('Coffee button clicked!')
+                const newEnergyUnits = Math.min(10, energyUnits + 1)
+                console.log('Coffee clicked! Old energy:', energyUnits, 'New energy:', newEnergyUnits)
+                updateEnergyUnits(newEnergyUnits)
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="p-3 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors text-left cursor-pointer"
+              disabled={energyUnits >= 10}
+            >
+              <div className="font-medium text-green-800">☕ Coffee/Caffeine</div>
+              <div className="text-sm text-green-600">+1 spoon (quick boost)</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const newEnergyUnits = Math.min(10, energyUnits + 1)
+                console.log('Booster clicked! Old energy:', energyUnits, 'New energy:', newEnergyUnits)
+                updateEnergyUnits(newEnergyUnits)
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="p-3 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors text-left"
+              disabled={energyUnits >= 10}
+            >
+              <div className="font-medium text-blue-800">🚶 5-min Walk</div>
+              <div className="text-sm text-blue-600">+1 spoon (movement boost)</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const newEnergyUnits = Math.min(10, energyUnits + 1)
+                console.log('Booster clicked! Old energy:', energyUnits, 'New energy:', newEnergyUnits)
+                updateEnergyUnits(newEnergyUnits)
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="p-3 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors text-left"
+              disabled={energyUnits >= 10}
+            >
+              <div className="font-medium text-purple-800">🥙 Protein Snack</div>
+              <div className="text-sm text-purple-600">+1 spoon (fuel boost)</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const newEnergyUnits = Math.min(10, energyUnits + 1)
+                console.log('Booster clicked! Old energy:', energyUnits, 'New energy:', newEnergyUnits)
+                updateEnergyUnits(newEnergyUnits)
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="p-3 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors text-left"
+              disabled={energyUnits >= 10}
+            >
+              <div className="font-medium text-orange-800">🧘 2-min Breathing</div>
+              <div className="text-sm text-orange-600">+1 spoon (calm boost)</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const newEnergyUnits = Math.min(10, energyUnits + 2)
+                console.log('+2 Booster clicked! Old energy:', energyUnits, 'New energy:', newEnergyUnits)
+                updateEnergyUnits(newEnergyUnits)
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="p-3 bg-pink-50 border border-pink-200 rounded-lg hover:bg-pink-100 transition-colors text-left"
+              disabled={energyUnits >= 9}
+            >
+              <div className="font-medium text-pink-800">💊 ADHD Medication</div>
+              <div className="text-sm text-pink-600">+2 spoons (med boost)</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                const newEnergyUnits = Math.min(10, energyUnits + 2)
+                console.log('+2 Booster clicked! Old energy:', energyUnits, 'New energy:', newEnergyUnits)
+                updateEnergyUnits(newEnergyUnits)
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors text-left"
+              disabled={energyUnits >= 9}
+            >
+              <div className="font-medium text-yellow-800">😴 20-min Power Nap</div>
+              <div className="text-sm text-yellow-600">+2 spoons (rest boost)</div>
+            </button>
+          </div>
+
+          {energyUnits >= 10 && (
+            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border">
+              <strong>Max spoons reached!</strong> You're at peak energy capacity for today.
+            </div>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <Button 
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="w-full"
+          size="lg"
+        >
+          {isSubmitting && <Zap className="h-4 w-4 mr-2 animate-spin" />}
+          Calculate My Daily Capacity
+        </Button>
+
+        {result && (
+          <div className="space-y-2">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="w-full"
+            >
+              Reset and Try Again
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => {
+                const today = getCurrentDate()
+                localStorage.removeItem(`neuro-check-${today}`)
+                setCheckData({
+                  mood_level: 5,
+                  energy_units: 5,
+                  focus_capacity: 5,
+                  stress_level: 5,
+                  brain_mode: 'Normal',
+                  burnout_flags: [],
+                  sensory_state: 'balanced',
+                  sleep_quality: 'fair',
+                  notes: '',
+                  spoon_expansion_efforts: []
+                })
+                setEnergyUnits(5)
+                setExpansionEfforts([])
+                setResult(null)
+                setShowSuccess(false)
+              }}
+              className="w-full text-xs"
+            >
+              Clear All Today's Data (Start Over)
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}

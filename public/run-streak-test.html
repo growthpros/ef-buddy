@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streak Inheritance Test Results</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+            background: #1a1a1a; 
+            color: #00ff00; 
+            line-height: 1.6; 
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .test-output { 
+            background: #000; 
+            border: 1px solid #333; 
+            padding: 20px; 
+            border-radius: 5px; 
+            white-space: pre-wrap; 
+            font-size: 14px; 
+            height: 500px; 
+            overflow-y: auto; 
+        }
+        .controls { margin-bottom: 20px; }
+        button { 
+            background: #333; 
+            color: #00ff00; 
+            border: 1px solid #555; 
+            padding: 10px 20px; 
+            margin-right: 10px; 
+            cursor: pointer; 
+            font-family: inherit; 
+        }
+        button:hover { background: #555; }
+        .success { color: #00ff00; }
+        .error { color: #ff4444; }
+        .warning { color: #ffaa00; }
+        .info { color: #4488ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 EF Buddy Streak Inheritance Test</h1>
+        <p>Testing the fix for 5-day streak system inheritance across days...</p>
+        
+        <div class="controls">
+            <button onclick="runTests()">🚀 Run Tests</button>
+            <button onclick="clearOutput()">🧹 Clear</button>
+            <button onclick="viewLocalStorage()">👁️ View Storage</button>
+            <button onclick="openNeuroCheck()">🔗 Open Neuro-Check</button>
+        </div>
+        
+        <div id="output" class="test-output">Ready to run tests...
+
+Click "🚀 Run Tests" to verify the streak inheritance fix is working correctly.
+
+The test will:
+1. Create sample data simulating the failing scenario
+2. Test the inheritance logic from the component
+3. Verify complete 5-day streak progression
+4. Report success/failure of the fix
+
+</div>
+    </div>
+
+    <script src="/test-streak-inheritance.js"></script>
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output')
+            const timestamp = new Date().toLocaleTimeString()
+            const colorClass = type
+            
+            // Add styling based on content
+            let styledMessage = message
+            if (message.includes('✅')) styledMessage = `<span class="success">${message}</span>`
+            else if (message.includes('❌')) styledMessage = `<span class="error">${message}</span>`
+            else if (message.includes('⚠️')) styledMessage = `<span class="warning">${message}</span>`
+            else if (message.includes('🔍') || message.includes('ℹ️')) styledMessage = `<span class="info">${message}</span>`
+            
+            output.innerHTML += `[${timestamp}] ${styledMessage}\n`
+            output.scrollTop = output.scrollHeight
+        }
+
+        // Override console.log to capture output
+        const originalLog = console.log
+        console.log = function(...args) {
+            originalLog.apply(console, args)
+            log(args.join(' '))
+        }
+
+        function runTests() {
+            clearOutput()
+            log('🎯 Starting Streak Inheritance Tests...', 'info')
+            log('=' + '='.repeat(50), 'info')
+            
+            try {
+                if (window.testStreakInheritance) {
+                    window.testStreakInheritance.runAllTests()
+                } else {
+                    log('❌ Test functions not loaded!', 'error')
+                }
+            } catch (error) {
+                log(`❌ Test error: ${error.message}`, 'error')
+                originalLog.error(error)
+            }
+        }
+
+        function clearOutput() {
+            document.getElementById('output').innerHTML = 'Output cleared.\n\n'
+        }
+
+        function viewLocalStorage() {
+            clearOutput()
+            log('👁️ Current localStorage contents:', 'info')
+            
+            let found = false
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i)
+                if (key && key.startsWith('neuro-check-')) {
+                    found = true
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key))
+                        const streaks = data.habit_streaks || []
+                        const efforts = data.spoon_expansion_efforts || []
+                        
+                        log(`📁 ${key}:`)
+                        log(`   Efforts: [${efforts.join(', ')}]`)
+                        
+                        if (streaks.length > 0) {
+                            streaks.forEach(streak => {
+                                log(`   Streak ${streak.effort_id}: ${streak.current_streak}/5 days ${streak.is_earned ? '🏆' : ''}`)
+                            })
+                        } else {
+                            log('   No streaks')
+                        }
+                        log('')
+                    } catch (e) {
+                        log(`   ❌ Error parsing: ${e.message}`)
+                    }
+                }
+            }
+            
+            if (!found) {
+                log('📂 No neuro-check data found in localStorage')
+            }
+        }
+
+        function openNeuroCheck() {
+            window.open('/neuro-check', '_blank')
+        }
+
+        // Auto-run tests after a short delay
+        setTimeout(() => {
+            log('🚀 Auto-running tests in 2 seconds...')
+            setTimeout(runTests, 2000)
+        }, 1000)
+    </script>
+</body>
+</html>
