@@ -27,7 +27,7 @@ export interface TaskInput {
   tags?: string[] | null
 }
 
-export type TaskStatus = 'capture' | 'today' | 'this_week' | 'completed' | 'archived'
+export type TaskStatus = 'capture' | 'today' | 'completed' | 'archived'
 export type Priority = 'low' | 'medium' | 'high' | 'urgent'
 
 export interface UserPreferences {

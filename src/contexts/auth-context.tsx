@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { getCurrentUser, onAuthStateChange, enableDemoMode, type AuthUser } from '@/lib/auth'
+import { getCurrentUser, onAuthStateChange, type AuthUser } from '@/lib/auth'
 
 interface AuthContextType {
   user: AuthUser | null
@@ -30,6 +30,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    // Enable demo mode by default in development
+    if (typeof window !== 'undefined') {
+      if (!localStorage.getItem('demo-mode')) {
+        console.log('🎯 Enabling demo mode for development')
+        localStorage.setItem('demo-mode', 'true')
+      }
+      
+      if (localStorage.getItem('demo-mode') === 'true') {
+        console.log('🎯 Demo mode enabled - auto-authenticating user')
+        setUser({
+          id: 'demo-user',
+          email: 'demo@example.com',
+          user_metadata: { name: 'Demo User' },
+          app_metadata: {},
+          aud: 'authenticated',
+          created_at: new Date().toISOString()
+        })
+        setIsLoading(false)
+        return
+      }
+    }
+
     // Initial user load
     refetchUser()
 
@@ -76,18 +98,6 @@ export function withAuth<P extends object>(
 
     useEffect(() => {
       if (!isLoading && !isAuthenticated) {
-        // Enable demo mode automatically in development
-        if (process.env.NODE_ENV === 'development' || 
-            window.location.hostname.includes('e2b.dev') ||
-            window.location.hostname === 'localhost') {
-          console.log('🎯 Enabling demo mode for development/testing')
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('demo-mode', 'true')
-          }
-          // Trigger a re-render by refreshing the page
-          window.location.reload()
-          return
-        }
         window.location.href = redirectTo
       }
     }, [isAuthenticated, isLoading])

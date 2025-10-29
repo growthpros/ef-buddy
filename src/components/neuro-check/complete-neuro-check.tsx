@@ -232,14 +232,6 @@ export function CompleteNeuroCheck() {
       const today = new Date().toISOString().split('T')[0]
       localStorage.setItem(`neuro-check-${today}`, JSON.stringify(updatedData))
       
-      // Notify other components that neuro-check is complete
-      const event = new CustomEvent('neuro-check-completed', {
-        detail: { capacity: calculatedResult.capacity, date: today }
-      })
-      window.dispatchEvent(event)
-      
-      console.log('✅ Neuro-check completed and saved with capacity:', calculatedResult.capacity)
-      
       // Hide success message after 3 seconds
       setTimeout(() => setShowSuccess(false), 3000)
     } catch (err) {

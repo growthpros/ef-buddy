@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Card, CardContent, Badge, Button } from '@/components/ui'
+import { Progress } from '@/components/ui/progress'
 import { CheckCircle } from 'lucide-react'
 import { cn, formatTaskDate, formatDuration } from '@/lib/utils'
 import { priorityBadge, energyBadge, statusBadge } from '@/components/ui/badge'
@@ -30,54 +31,6 @@ export function TaskCard({
 }: TaskCardProps) {
   const isCompleted = task.status === 'completed'
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && !isCompleted
-
-  // Load subtasks to show progress
-  const [subtasks, setSubtasks] = React.useState<any[]>([])
-  const [subtaskProgress, setSubtaskProgress] = React.useState<number>(0)
-
-  const loadSubtasksProgress = React.useCallback(() => {
-    try {
-      const savedSubtasks = localStorage.getItem(`subtasks_${task.id}`)
-      if (savedSubtasks) {
-        const parsed = JSON.parse(savedSubtasks)
-        setSubtasks(parsed)
-        
-        // Calculate progress
-        const completedCount = parsed.filter((st: any) => st.completed).length
-        const progress = parsed.length > 0 ? (completedCount / parsed.length) * 100 : 0
-        setSubtaskProgress(progress)
-      } else {
-        setSubtasks([])
-        setSubtaskProgress(0)
-      }
-    } catch (error) {
-      console.error('Failed to load subtasks for progress:', error)
-      setSubtasks([])
-      setSubtaskProgress(0)
-    }
-  }, [task.id])
-
-  React.useEffect(() => {
-    loadSubtasksProgress()
-    
-    // Listen for localStorage changes to update progress in real-time
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === `subtasks_${task.id}`) {
-        loadSubtasksProgress()
-      }
-    }
-    
-    window.addEventListener('storage', handleStorageChange)
-    
-    // Also listen for custom events (for same-window updates)
-    const handleCustomUpdate = () => loadSubtasksProgress()
-    window.addEventListener('subtasks-updated', handleCustomUpdate)
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('subtasks-updated', handleCustomUpdate)
-    }
-  }, [loadSubtasksProgress])
 
   return (
     <Card 
@@ -122,6 +75,32 @@ export function TaskCard({
                 {task.description}
               </p>
             )}
+            
+            {/* Progress Bar for tasks with subtasks */}
+            {task.subtasks && task.subtasks.length > 0 && (
+              <div className="mt-2">
+                {(() => {
+                  const completed = task.subtasks.filter(st => st.completed).length
+                  const total = task.subtasks.length
+                  const percentage = total > 0 ? (completed / total) * 100 : 0
+                  
+                  return (
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center text-xs text-secondary-600">
+                        <span>Progress</span>
+                        <span>{completed}/{total} steps ({Math.round(percentage)}%)</span>
+                      </div>
+                      <Progress 
+                        value={percentage} 
+                        size="sm" 
+                        variant={percentage === 100 ? 'success' : 'default'}
+                        className="bg-secondary-200" 
+                      />
+                    </div>
+                  )
+                })()}
+              </div>
+            )}
             </div>
 
             {/* Status Badge */}
@@ -155,27 +134,6 @@ export function TaskCard({
             </span>
           )}
         </div>
-
-        {/* Progress Bar for Multi-step Tasks */}
-        {subtasks.length > 0 && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-secondary-600">
-              <span>Progress: {Math.round(subtaskProgress)}%</span>
-              <span>{subtasks.filter(st => st.completed).length} of {subtasks.length} steps</span>
-            </div>
-            <div className="w-full bg-secondary-200 rounded-full h-2">
-              <div 
-                className={cn(
-                  "h-2 rounded-full transition-all duration-300",
-                  subtaskProgress === 100 
-                    ? "bg-green-500" 
-                    : "bg-blue-500"
-                )}
-                style={{ width: `${subtaskProgress}%` }}
-              />
-            </div>
-          </div>
-        )}
 
         {/* Tags */}
         {task.tags && task.tags.length > 0 && (

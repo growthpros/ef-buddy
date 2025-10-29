@@ -20,14 +20,13 @@ import {
   MoreHorizontal,
   TrendingUp,
   Calendar,
-  Maximize,
-  Minimize
+  Inbox
 } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { QuickCapture } from '@/components/tasks/quick-capture'
 import { TaskCard } from '@/components/tasks/task-card'
 import { TaskDetailModal } from '@/components/tasks/task-detail-modal'
-import { withAuth, useAuth } from '@/contexts/auth-context'
+import { useAuth } from '@/contexts/auth-context'
 import { tasksAPI } from '@/lib/api/tasks-mock'
 import type { Task, TaskStatus, Priority, DailyLoad } from '@/lib/types'
 import type { AITaskClassification } from '@/lib/hooks/use-ai-classification'
@@ -39,211 +38,51 @@ function TasksPage() {
   const [todayTasks, setTodayTasks] = useState<Task[]>([])
   const [thisWeekTasks, setThisWeekTasks] = useState<Task[]>([])
   const [completedTasks, setCompletedTasks] = useState<Task[]>([])
+  const [allTasks, setAllTasks] = useState<Task[]>([])
   const [dailyLoad, setDailyLoad] = useState<DailyLoad | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [showTaskDetails, setShowTaskDetails] = useState(false)
   const [activeView, setActiveView] = useState<'capture' | 'today' | 'triage' | 'all'>('capture')
+  const [fullscreenAllTasks, setFullscreenAllTasks] = useState(false)
 
   // Spoon integration from neuro-check
   const [dailySpoons, setDailySpoons] = useState(12) // This would come from neuro-check results
   const [availableSpoons, setAvailableSpoons] = useState(12)
-  
-  // Undo functionality
-  const [undoStack, setUndoStack] = useState<Array<{ action: string; data: any; timestamp: number }>>([])
-  const [showUndoNotification, setShowUndoNotification] = useState(false)
-  
-  // Fullscreen mode for All Tasks
-  const [fullscreenAllTasks, setFullscreenAllTasks] = useState(false)
 
   useEffect(() => {
     loadTasks()
     loadDailyLoad()
-    
-    // Seed demo data if in demo mode and no neuro-check data exists
-    if (typeof window !== 'undefined' && localStorage.getItem('demo-mode') === 'true') {
-      const today = new Date().toISOString().split('T')[0]
-      const todayKey = `neuro-check-${today}`
-      
-      if (!localStorage.getItem(todayKey)) {
-        console.log('🎯 Demo mode: Creating demo neuro-check data with 8 spoons')
-        const demoNeuroCheckData = {
-          mood_level: 4,
-          energy_units: 4,
-          focus_capacity: 4,
-          stress_level: 3,
-          brain_mode: 'Normal',
-          burnout_flags: [],
-          sensory_state: 'balanced',
-          sleep_quality: 'good',
-          notes: 'Demo data for testing',
-          capacity_today: 8,
-          spoon_expansion_efforts: ['meditation', 'protein'],
-          completed_at: new Date().toISOString()
-        }
-        localStorage.setItem(todayKey, JSON.stringify(demoNeuroCheckData))
-        console.log('✅ Demo neuro-check data created')
-      }
-    }
-    
-    loadSpoonCapacity()
-    
-    // Listen for storage changes to sync spoon capacity
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key && e.key.startsWith('neuro-check-')) {
-        console.log('🔄 Detected neuro-check data change via storage event, reloading spoon capacity')
-        setTimeout(loadSpoonCapacity, 100) // Small delay to ensure data is saved
-      }
-    }
-    
-    // Listen for custom events from neuro-check completion
-    const handleNeuroCheckComplete = (e: CustomEvent) => {
-      console.log('🔄 Received neuro-check completion event:', e.detail)
-      setTimeout(loadSpoonCapacity, 100)
-    }
-    
-    window.addEventListener('storage', handleStorageChange)
-    window.addEventListener('neuro-check-completed', handleNeuroCheckComplete as EventListener)
-    
-    // Also check for changes when the page becomes visible
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log('🔄 Page became visible, refreshing spoon capacity')
-        loadSpoonCapacity()
-      }
-    }
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('neuro-check-completed', handleNeuroCheckComplete as EventListener)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }
   }, [])
-
-  // Load current spoon capacity from neuro-check results
-  const loadSpoonCapacity = () => {
-    console.log('🔄 loadSpoonCapacity called - starting spoon capacity check')
-    
-    try {
-      // Get all localStorage keys with neuro-check data
-      const neuroCheckKeys = []
-      const allKeys = []
-      
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key) {
-          allKeys.push(key)
-          if (key.startsWith('neuro-check-')) {
-            neuroCheckKeys.push(key)
-          }
-        }
-      }
-      
-      console.log('🔍 All localStorage keys:', allKeys)
-      console.log('🔍 Found neuro-check data keys:', neuroCheckKeys)
-      
-      // Also check today's date specifically
-      const today = new Date().toISOString().split('T')[0]
-      const todayKey = `neuro-check-${today}`
-      console.log('🔍 Today\'s date:', today)
-      console.log('🔍 Looking specifically for today key:', todayKey)
-      console.log('🔍 Today key exists?', !!localStorage.getItem(todayKey))
-      
-      // Check all dates available
-      neuroCheckKeys.forEach(key => {
-        const dateFromKey = key.replace('neuro-check-', '')
-        console.log(`📅 Available neuro-check date: ${dateFromKey} (key: ${key})`)
-      })
-      
-      // Sort by date (most recent first) and add today's key if it exists
-      const keysToCheck = [...neuroCheckKeys]
-      if (!keysToCheck.includes(todayKey) && localStorage.getItem(todayKey)) {
-        keysToCheck.unshift(todayKey)
-      }
-      
-      keysToCheck.sort((a, b) => {
-        const dateA = a.replace('neuro-check-', '')
-        const dateB = b.replace('neuro-check-', '')
-        return dateB.localeCompare(dateA)
-      })
-      
-      console.log('🔍 Keys to check in order:', keysToCheck)
-      
-      // Try to find the most recent completed neuro-check
-      for (const key of keysToCheck) {
-        try {
-          const neuroCheckData = localStorage.getItem(key)
-          if (neuroCheckData) {
-            const parsed = JSON.parse(neuroCheckData)
-            console.log(`📋 Checking neuro-check data from ${key}:`, parsed)
-            console.log(`📋 Has capacity_today: ${parsed.capacity_today !== undefined} (value: ${parsed.capacity_today})`)
-            console.log(`📋 Has completed_at: ${!!parsed.completed_at} (value: ${parsed.completed_at})`)
-            
-            // Check if this is a completed neuro-check with capacity data
-            if (parsed.capacity_today !== undefined && parsed.completed_at) {
-              console.log(`✅ Found valid completed neuro-check! Using spoon capacity from ${key}: ${parsed.capacity_today}`)
-              console.log(`🔄 Setting dailySpoons to ${parsed.capacity_today}`)
-              console.log(`🔄 Setting availableSpoons to ${parsed.capacity_today}`)
-              setDailySpoons(parsed.capacity_today)
-              setAvailableSpoons(parsed.capacity_today) // Start with full capacity
-              console.log(`✅ Spoon capacity updated! Daily: ${parsed.capacity_today}, Available: ${parsed.capacity_today}`)
-              return // Found valid data, stop searching
-            } else if (parsed.capacity_today !== undefined && key === todayKey) {
-              console.log(`⚠️ Found TODAY'S capacity but no completion timestamp: ${parsed.capacity_today}`)
-              console.log(`🔄 Setting spoons anyway since it's today's data`)
-              setDailySpoons(parsed.capacity_today)
-              setAvailableSpoons(parsed.capacity_today)
-              return
-            } else if (parsed.capacity_today !== undefined) {
-              console.log(`⚠️ Found capacity from previous day but no completion timestamp: ${parsed.capacity_today} from ${key}`)
-              // Don't use old incomplete data, continue searching
-            } else {
-              console.log(`❌ Key ${key} has no capacity_today field`)
-            }
-          } else {
-            console.log(`❌ Key ${key} has no data`)
-          }
-        } catch (parseError) {
-          console.error(`Failed to parse neuro-check data from ${key}:`, parseError)
-        }
-      }
-      
-      console.log('⚠️ No valid neuro-check data found, keeping current spoons')
-      console.log(`🔍 Current state - dailySpoons: ${dailySpoons}, availableSpoons: ${availableSpoons}`)
-    } catch (error) {
-      console.error('Failed to load spoon capacity from neuro-check:', error)
-      // Keep default values
-    }
-  }
 
   const loadTasks = async () => {
     setLoading(true)
     try {
-      const [capturedResult, todayResult, thisWeekResult, completedResult] = await Promise.all([
+      const [capturedResult, todayResult, thisWeekResult, completedResult, allTasksResult] = await Promise.all([
         tasksAPI.getCapturedTasks(),
         tasksAPI.getTodayTasks(),
         tasksAPI.getThisWeekTasks(),
-        tasksAPI.getCompletedTasks()
+        tasksAPI.getCompletedTasks(),
+        tasksAPI.getTasks()
       ])
 
       if (capturedResult.error) throw new Error(capturedResult.error)
       if (todayResult.error) throw new Error(todayResult.error)
       if (thisWeekResult.error) throw new Error(thisWeekResult.error)
       if (completedResult.error) throw new Error(completedResult.error)
+      if (allTasksResult.error) throw new Error(allTasksResult.error)
 
       setCapturedTasks(capturedResult.data || [])
       setTodayTasks(todayResult.data || [])
       setThisWeekTasks(thisWeekResult.data || [])
       setCompletedTasks(completedResult.data || [])
+      setAllTasks(allTasksResult.data || [])
       
       // Combine all tasks for full list
       const allTasks = [
         ...(capturedResult.data || []),
         ...(todayResult.data || []),
-        ...(thisWeekResult.data || []),
         ...(completedResult.data || [])
       ]
       setTasks(allTasks)
@@ -291,24 +130,6 @@ function TasksPage() {
       }
       
       console.log('✅ Task created successfully:', result.data)
-      
-      // If AI provided breakdown steps, store them for the task
-      if (aiClassification?.breakdown_steps && aiClassification.breakdown_steps.length > 0) {
-        console.log('📋 Storing AI breakdown steps for task:', aiClassification.breakdown_steps)
-        // Store subtasks in localStorage for demo mode
-        const subtasks = aiClassification.breakdown_steps.map((step, index) => ({
-          id: `subtask_${result.data?.id}_${index}`,
-          title: step,
-          completed: false,
-          task_id: result.data?.id,
-          order: index,
-          energy_required: Math.ceil(aiClassification.energy_level / aiClassification.breakdown_steps.length),
-          created_at: new Date().toISOString()
-        }))
-        
-        localStorage.setItem(`subtasks_${result.data?.id}`, JSON.stringify(subtasks))
-      }
-      
       await loadTasks() // Refresh task lists to show the new task
     } catch (error) {
       console.error('❌ Failed to create task:', error)
@@ -316,45 +137,8 @@ function TasksPage() {
     }
   }
 
-  // Undo functionality
-  const addToUndoStack = (action: string, data: any) => {
-    setUndoStack(prev => [...prev.slice(-4), { action, data, timestamp: Date.now() }]) // Keep last 5 actions
-    setShowUndoNotification(true)
-    setTimeout(() => setShowUndoNotification(false), 5000) // Hide after 5 seconds
-  }
-
-  const handleUndo = async () => {
-    if (undoStack.length === 0) return
-    
-    const lastAction = undoStack[undoStack.length - 1]
-    setUndoStack(prev => prev.slice(0, -1))
-    
-    try {
-      switch (lastAction.action) {
-        case 'complete':
-          await tasksAPI.updateTask(lastAction.data.id, { status: lastAction.data.originalStatus })
-          break
-        case 'promote':
-          await tasksAPI.updateTask(lastAction.data.id, { status: 'capture' })
-          break
-        case 'delete':
-          // For delete, we would need to restore the task (this is more complex)
-          console.log('Undo delete not yet implemented')
-          break
-      }
-      await loadTasks()
-      await loadDailyLoad()
-    } catch (error) {
-      console.error('Undo failed:', error)
-      setError('Failed to undo action')
-    }
-  }
-
   const handleTaskComplete = async (task: Task) => {
     try {
-      // Add to undo stack before making changes
-      addToUndoStack('complete', { id: task.id, originalStatus: task.status })
-      
       const result = await tasksAPI.completeTask(task.id)
       if (result.error) throw new Error(result.error)
       await loadTasks()
@@ -366,9 +150,6 @@ function TasksPage() {
 
   const handleTaskPromote = async (task: Task) => {
     try {
-      // Add to undo stack before making changes
-      addToUndoStack('promote', { id: task.id, originalStatus: task.status })
-      
       const result = await tasksAPI.moveToToday(task.id)
       if (result.error) throw new Error(result.error)
       await loadTasks()
@@ -380,15 +161,12 @@ function TasksPage() {
 
   const handleTaskPromoteToWeek = async (task: Task) => {
     try {
-      // Add to undo stack before making changes
-      addToUndoStack('promote_week', { id: task.id, originalStatus: task.status })
-      
       const result = await tasksAPI.moveToThisWeek(task.id)
       if (result.error) throw new Error(result.error)
       await loadTasks()
       await loadDailyLoad()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to promote task to this week')
+      setError(err instanceof Error ? err.message : 'Failed to move task to this week')
     }
   }
 
@@ -420,6 +198,35 @@ function TasksPage() {
       setSelectedTask(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete task')
+    }
+  }
+
+  const handleTaskStatusChange = async (task: Task, newStatus: Task['status']) => {
+    try {
+      let result
+      switch (newStatus) {
+        case 'today':
+          result = await tasksAPI.moveToToday(task.id)
+          break
+        case 'this_week':
+          result = await tasksAPI.moveToThisWeek(task.id)
+          break
+        case 'completed':
+          result = await tasksAPI.completeTask(task.id)
+          break
+        case 'capture':
+          // Move back to capture (if needed)
+          result = await tasksAPI.updateTask(task.id, { status: 'capture' })
+          break
+        default:
+          throw new Error(`Unknown status: ${newStatus}`)
+      }
+      
+      if (result.error) throw new Error(result.error)
+      await loadTasks()
+      await loadDailyLoad()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Failed to change task status to ${newStatus}`)
     }
   }
 
@@ -487,15 +294,6 @@ function TasksPage() {
                     </div>
                     <div className="text-sm opacity-80">{spoonStatus.label}</div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={loadSpoonCapacity}
-                    className="ml-2 opacity-60 hover:opacity-100"
-                    title="Refresh spoon capacity from neuro-check"
-                  >
-                    🔄
-                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -544,8 +342,8 @@ function TasksPage() {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <CheckCircle className="h-4 w-4 inline mr-2" />
-              All Tasks ({tasks.length})
+              <MoreHorizontal className="h-4 w-4 inline mr-2" />
+              All Tasks ({allTasks.length})
             </button>
           </div>
 
@@ -553,36 +351,6 @@ function TasksPage() {
             <Alert className="border-red-200 bg-red-50">
               <AlertDescription className="text-red-700">
                 {error}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Undo Functionality */}
-          {undoStack.length > 0 && (
-            <Alert className={`border-blue-200 bg-blue-50 ${showUndoNotification ? 'ring-2 ring-blue-300 shadow-lg' : ''}`}>
-              <AlertDescription className="flex items-center justify-between">
-                <span className="text-blue-800">
-                  {showUndoNotification 
-                    ? `Action completed. ${undoStack[undoStack.length - 1].action} can be undone.`
-                    : `${undoStack.length} action${undoStack.length > 1 ? 's' : ''} can be undone`
-                  }
-                </span>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleUndo}
-                    className="text-blue-600 border-blue-300 hover:bg-blue-100"
-                  >
-                    <ArrowUp className="h-3 w-3 mr-1 rotate-180" />
-                    Undo {undoStack[undoStack.length - 1]?.action || 'Last Action'}
-                  </Button>
-                  {undoStack.length > 1 && (
-                    <Badge variant="outline" className="text-blue-600 border-blue-300">
-                      +{undoStack.length - 1} more
-                    </Badge>
-                  )}
-                </div>
               </AlertDescription>
             </Alert>
           )}
@@ -792,7 +560,7 @@ function TasksPage() {
                     {/* Inbox */}
                     <div>
                       <h3 className="font-medium text-gray-900 mb-4 flex items-center">
-                        <Plus className="h-4 w-4 mr-2 text-gray-500" />
+                        <Inbox className="h-4 w-4 mr-2 text-gray-500" />
                         Inbox ({capturedTasks.length})
                       </h3>
                       <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -812,13 +580,12 @@ function TasksPage() {
                                   <span className="text-xs text-gray-500">{task.energy_required} energy</span>
                                 </div>
                               </div>
-                              <div className="flex flex-col gap-1">
+                              <div className="flex gap-1">
                                 <Button
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => handleTaskPromote(task)}
-                                  className="text-blue-600 hover:text-blue-700 text-xs px-2 py-1"
-                                  title="Move to Today"
+                                  className="text-blue-600 hover:text-blue-700 text-xs"
                                 >
                                   → Today
                                 </Button>
@@ -826,8 +593,7 @@ function TasksPage() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => handleTaskPromoteToWeek(task)}
-                                  className="text-purple-600 hover:text-purple-700 text-xs px-2 py-1"
-                                  title="Move to This Week"
+                                  className="text-purple-600 hover:text-purple-700 text-xs"
                                 >
                                   → Week
                                 </Button>
@@ -835,12 +601,6 @@ function TasksPage() {
                             </div>
                           </div>
                         ))}
-                        {capturedTasks.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No tasks in inbox</p>
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -863,29 +623,22 @@ function TasksPage() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={() => handleTaskComplete(task)}
-                                className="text-green-600 hover:text-green-700 text-xs"
-                              >
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Complete
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
                                 onClick={() => handleTaskPromoteToWeek(task)}
                                 className="text-purple-600 hover:text-purple-700 text-xs"
                               >
                                 → Week
                               </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleTaskComplete(task)}
+                                className="text-green-600 hover:text-green-700 text-xs"
+                              >
+                                ✓ Complete
+                              </Button>
                             </div>
                           </div>
                         ))}
-                        {todayTasks.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No tasks for today</p>
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -919,8 +672,7 @@ function TasksPage() {
                                 onClick={() => handleTaskComplete(task)}
                                 className="text-green-600 hover:text-green-700 text-xs"
                               >
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                                Complete
+                                ✓ Complete
                               </Button>
                             </div>
                           </div>
@@ -928,7 +680,7 @@ function TasksPage() {
                         {thisWeekTasks.length === 0 && (
                           <div className="text-center py-6 text-gray-500">
                             <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No tasks for this week</p>
+                            <p className="text-sm">No tasks scheduled for this week</p>
                           </div>
                         )}
                       </div>
@@ -955,7 +707,7 @@ function TasksPage() {
                         {completedTasks.length === 0 && (
                           <div className="text-center py-6 text-gray-500">
                             <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No completed tasks</p>
+                            <p className="text-sm">No completed tasks yet</p>
                           </div>
                         )}
                       </div>
@@ -968,168 +720,55 @@ function TasksPage() {
 
           {/* All Tasks View */}
           {activeView === 'all' && (
-            <div className={fullscreenAllTasks ? "fixed inset-0 z-50 bg-gradient-to-br from-blue-50 to-indigo-100 overflow-auto" : "space-y-6"}>
-              {fullscreenAllTasks && (
-                <div className="p-4">
-                  <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center justify-between mb-6">
-                      <h1 className="text-2xl font-bold text-gray-900">All Tasks ({tasks.length})</h1>
-                      <Button
-                        variant="outline"
-                        onClick={() => setFullscreenAllTasks(false)}
-                      >
-                        <Minimize className="h-4 w-4 mr-2" />
-                        Exit Fullscreen
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              <Card className={fullscreenAllTasks ? "mx-4 max-w-7xl mx-auto" : ""}>
-                {!fullscreenAllTasks && (
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle>All Tasks ({tasks.length})</CardTitle>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setFullscreenAllTasks(true)}
-                      >
-                        <Maximize className="h-4 w-4 mr-2" />
-                        Fullscreen
-                      </Button>
-                    </div>
-                  </CardHeader>
-                )}
-                
-                <CardContent className="space-y-6">
-                  {/* Tasks by Status */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Captured Tasks */}
-                    <div>
-                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
-                        <Plus className="h-4 w-4 mr-2 text-blue-500" />
-                        Captured ({capturedTasks.length})
-                      </h3>
-                      <div className={`space-y-3 overflow-y-auto ${fullscreenAllTasks ? 'max-h-[calc(100vh-200px)]' : 'max-h-96'}`}>
-                        {capturedTasks.map(task => (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            onEdit={() => {
-                              setSelectedTask(task)
-                              setShowTaskDetails(true)
-                            }}
-                            onComplete={handleTaskComplete}
-                            onDelete={handleTaskDelete}
-                            onStatusChange={(task, status) => {
-                              if (status === 'today') handleTaskPromote(task)
-                              else if (status === 'this_week') handleTaskPromoteToWeek(task)
-                            }}
-                            compact={!fullscreenAllTasks}
-                          />
-                        ))}
-                        {capturedTasks.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No captured tasks</p>
-                          </div>
-                        )}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>All Tasks ({allTasks.length})</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setFullscreenAllTasks(!fullscreenAllTasks)}
+                      className="flex items-center gap-2"
+                    >
+                      {fullscreenAllTasks ? (
+                        <>
+                          <MoreHorizontal className="h-4 w-4" />
+                          Exit Fullscreen
+                        </>
+                      ) : (
+                        <>
+                          <MoreHorizontal className="h-4 w-4" />
+                          Fullscreen
+                        </>
+                      )}
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className={`grid gap-4 ${fullscreenAllTasks ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'}`}>
+                    {allTasks.map(task => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        onEdit={(task) => {
+                          setSelectedTask(task)
+                          setShowTaskDetails(true)
+                        }}
+                        onComplete={handleTaskComplete}
+                        onDelete={handleTaskDelete}
+                        onStatusChange={handleTaskStatusChange}
+                        compact={!fullscreenAllTasks}
+                        showActions
+                      />
+                    ))}
+                    {allTasks.length === 0 && (
+                      <div className="col-span-full text-center py-12 text-gray-500">
+                        <MoreHorizontal className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <h3 className="text-lg font-medium">No tasks yet</h3>
+                        <p className="text-sm">Start by capturing your first task!</p>
                       </div>
-                    </div>
-
-                    {/* Today's Tasks */}
-                    <div>
-                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
-                        <Target className="h-4 w-4 mr-2 text-orange-500" />
-                        Today ({todayTasks.length})
-                      </h3>
-                      <div className={`space-y-3 overflow-y-auto ${fullscreenAllTasks ? 'max-h-[calc(100vh-200px)]' : 'max-h-96'}`}>
-                        {todayTasks.map(task => (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            onEdit={() => {
-                              setSelectedTask(task)
-                              setShowTaskDetails(true)
-                            }}
-                            onComplete={handleTaskComplete}
-                            onDelete={handleTaskDelete}
-                            onStatusChange={(task, status) => {
-                              if (status === 'this_week') handleTaskPromoteToWeek(task)
-                            }}
-                            compact={!fullscreenAllTasks}
-                          />
-                        ))}
-                        {todayTasks.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No tasks for today</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* This Week's Tasks */}
-                    <div>
-                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
-                        <Calendar className="h-4 w-4 mr-2 text-purple-500" />
-                        This Week ({thisWeekTasks.length})
-                      </h3>
-                      <div className={`space-y-3 overflow-y-auto ${fullscreenAllTasks ? 'max-h-[calc(100vh-200px)]' : 'max-h-96'}`}>
-                        {thisWeekTasks.map(task => (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            onEdit={() => {
-                              setSelectedTask(task)
-                              setShowTaskDetails(true)
-                            }}
-                            onComplete={handleTaskComplete}
-                            onDelete={handleTaskDelete}
-                            onStatusChange={(task, status) => {
-                              if (status === 'today') handleTaskPromote(task)
-                            }}
-                            compact={!fullscreenAllTasks}
-                          />
-                        ))}
-                        {thisWeekTasks.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No tasks for this week</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Completed Tasks */}
-                    <div>
-                      <h3 className="font-medium text-gray-900 mb-4 flex items-center">
-                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                        Completed ({completedTasks.length})
-                      </h3>
-                      <div className={`space-y-3 overflow-y-auto ${fullscreenAllTasks ? 'max-h-[calc(100vh-200px)]' : 'max-h-96'}`}>
-                        {completedTasks.slice(0, fullscreenAllTasks ? completedTasks.length : 10).map(task => (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            onEdit={() => {
-                              setSelectedTask(task)
-                              setShowTaskDetails(true)
-                            }}
-                            compact={!fullscreenAllTasks}
-                            showActions={false}
-                          />
-                        ))}
-                        {completedTasks.length === 0 && (
-                          <div className="text-center py-6 text-gray-500">
-                            <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No completed tasks</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -1155,4 +794,4 @@ function TasksPage() {
   )
 }
 
-export default withAuth(TasksPage)
+export default TasksPage

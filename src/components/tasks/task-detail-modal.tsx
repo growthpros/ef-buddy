@@ -82,21 +82,33 @@ export function TaskDetailModal({
         tags: task.tags || []
       })
       
-      // Load actual subtasks from localStorage (for demo mode)
-      try {
-        const savedSubtasks = localStorage.getItem(`subtasks_${task.id}`)
-        if (savedSubtasks) {
-          const parsed = JSON.parse(savedSubtasks)
-          console.log('📋 Loaded subtasks for task', task.id, ':', parsed)
-          setSubtasks(parsed)
-        } else {
-          console.log('📋 No subtasks found for task', task.id)
-          setSubtasks([])
+      // Mock subtasks for demo - in real app these would come from API
+      setSubtasks([
+        {
+          id: '1',
+          title: 'Research requirements',
+          completed: true,
+          energy_required: 2,
+          order: 0,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Create initial draft',
+          completed: false,
+          energy_required: 4,
+          order: 1,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: '3',
+          title: 'Review and revise',
+          completed: false,
+          energy_required: 3,
+          order: 2,
+          created_at: new Date().toISOString()
         }
-      } catch (error) {
-        console.error('Failed to load subtasks:', error)
-        setSubtasks([])
-      }
+      ])
     }
   }, [task])
 
@@ -162,12 +174,7 @@ export function TaskDetailModal({
           updated_at: new Date().toISOString()
         }))
         
-        setSubtasks(prev => {
-          const updated = [...prev, ...newSubtasks]
-          // Save to localStorage
-          localStorage.setItem(`subtasks_${task.id}`, JSON.stringify(updated))
-          return updated
-        })
+        setSubtasks(prev => [...prev, ...newSubtasks])
         console.log('✨ Generated', newSubtasks.length, 'AI subtasks')
       }
     } catch (error) {
@@ -450,14 +457,9 @@ export function TaskDetailModal({
               setSubtasks(prev => [...prev, newSubtask])
             }}
             onSubtaskComplete={(subtaskId) => {
-              setSubtasks(prev => {
-                const updated = prev.map(st => 
-                  st.id === subtaskId ? { ...st, completed: !st.completed } : st
-                )
-                // Save to localStorage
-                localStorage.setItem(`subtasks_${task.id}`, JSON.stringify(updated))
-                return updated
-              })
+              setSubtasks(prev => prev.map(st => 
+                st.id === subtaskId ? { ...st, completed: !st.completed } : st
+              ))
             }}
             onSubtaskPromote={async (subtaskId) => {
               const subtask = subtasks.find(st => st.id === subtaskId)

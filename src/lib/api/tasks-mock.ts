@@ -7,39 +7,64 @@
 
 import type { Task, TaskInput, TaskStatus, Priority } from '@/lib/types'
 
-// Initialize tasks from localStorage or use defaults
-const loadTasksFromStorage = (): Task[] => {
-  if (typeof window !== 'undefined') {
-    try {
-      const saved = localStorage.getItem('ef-buddy-tasks')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        console.log('📋 Loaded', parsed.length, 'tasks from localStorage')
-        return parsed
-      }
-    } catch (error) {
-      console.error('Failed to load tasks from localStorage:', error)
-    }
-  }
-  return defaultTasks
-}
-
-// Default mock data
-const defaultTasks: Task[] = [
+// Mock data storage
+let mockTasks: Task[] = [
   {
     id: '1',
     title: 'Complete project proposal',
     description: 'Write and submit the Q4 project proposal for the new initiative',
     status: 'capture',
     priority: 'high',
-    energy_required: 6,
+    energy_required: 12,  // Updated to match sum of subtasks (2+2+3+4+1)
     estimated_duration: 120,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     completed_at: null,
     user_id: 'demo-user',
     due_date: null,
-    tags: ['work', 'proposal']
+    tags: ['work', 'proposal'],
+    subtasks: [
+      {
+        id: '1-1',
+        title: 'Research requirements and objectives',
+        completed: true,
+        energy_required: 2,
+        order: 0,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '1-2',
+        title: 'Draft initial outline and structure',
+        completed: true,
+        energy_required: 2,
+        order: 1,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '1-3',
+        title: 'Write executive summary',
+        completed: false,
+        energy_required: 3,
+        order: 2,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '1-4',
+        title: 'Create budget estimates',
+        completed: false,
+        energy_required: 4,
+        order: 3,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '1-5',
+        title: 'Review and submit proposal',
+        completed: false,
+        energy_required: 1,
+        order: 4,
+        created_at: new Date().toISOString()
+      }
+    ]
   },
   {
     id: '2', 
@@ -47,14 +72,48 @@ const defaultTasks: Task[] = [
     description: 'Get ingredients for meal prep this week',
     status: 'today',
     priority: 'medium',
-    energy_required: 3,
+    energy_required: 5,  // Updated to match sum of subtasks (1+1+2+1)
     estimated_duration: 60,
     created_at: new Date(Date.now() - 86400000).toISOString(),
     updated_at: new Date().toISOString(),
     completed_at: null,
     user_id: 'demo-user',
     due_date: new Date().toISOString(),
-    tags: ['personal', 'health']
+    tags: ['personal', 'health'],
+    subtasks: [
+      {
+        id: '2-1',
+        title: 'Make shopping list',
+        completed: true,
+        energy_required: 1,
+        order: 0,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '2-2',
+        title: 'Drive to grocery store',
+        completed: false,
+        energy_required: 1,
+        order: 1,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '2-3',
+        title: 'Shop for items',
+        completed: false,
+        energy_required: 2,
+        order: 2,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '2-4',
+        title: 'Pay and pack groceries',
+        completed: false,
+        energy_required: 1,
+        order: 3,
+        created_at: new Date().toISOString()
+      }
+    ]
   },
   {
     id: '3',
@@ -62,19 +121,42 @@ const defaultTasks: Task[] = [
     description: '10 minutes of mindfulness practice',
     status: 'completed',
     priority: 'low',
-    energy_required: 1,
+    energy_required: 3,  // Updated to match sum of subtasks (1+1+1)
     estimated_duration: 10,
     created_at: new Date(Date.now() - 7200000).toISOString(),
     updated_at: new Date(Date.now() - 3600000).toISOString(),
     completed_at: new Date(Date.now() - 3600000).toISOString(),
     user_id: 'demo-user',
     due_date: null,
-    tags: ['wellness', 'routine']
+    tags: ['wellness', 'routine'],
+    subtasks: [
+      {
+        id: '3-1',
+        title: 'Find quiet space',
+        completed: true,
+        energy_required: 1,
+        order: 0,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '3-2',
+        title: 'Set timer for 10 minutes',
+        completed: true,
+        energy_required: 1,
+        order: 1,
+        created_at: new Date().toISOString()
+      },
+      {
+        id: '3-3',
+        title: 'Complete meditation session',
+        completed: true,
+        energy_required: 1,
+        order: 2,
+        created_at: new Date().toISOString()
+      }
+    ]
   }
 ]
-
-// Initialize mockTasks from localStorage or defaults
-let mockTasks: Task[] = loadTasksFromStorage()
 
 // Load from localStorage if available
 if (typeof window !== 'undefined') {
@@ -272,6 +354,10 @@ class MockTasksAPI {
     return this.moveTask(id, 'this_week')
   }
 
+  async getThisWeekTasks(): Promise<{ data: Task[] | null; error: string | null }> {
+    return this.getTasks({ status: ['this_week'], sortBy: 'priority', sortOrder: 'desc' })
+  }
+
   async smartMoveToToday(maxEnergy?: number): Promise<{ data: { moved_count: number } | null; error: string | null }> {
     try {
       const capturedTasks = mockTasks.filter(t => t.status === 'capture')
@@ -339,10 +425,6 @@ class MockTasksAPI {
 
   async getTodayTasks(): Promise<{ data: Task[] | null; error: string | null }> {
     return this.getTasks({ status: ['today'], sortBy: 'priority', sortOrder: 'desc' })
-  }
-
-  async getThisWeekTasks(): Promise<{ data: Task[] | null; error: string | null }> {
-    return this.getTasks({ status: ['this_week'], sortBy: 'priority', sortOrder: 'desc' })
   }
 
   async getCompletedTasks(): Promise<{ data: Task[] | null; error: string | null }> {
